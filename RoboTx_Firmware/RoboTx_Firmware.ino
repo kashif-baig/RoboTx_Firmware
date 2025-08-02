@@ -160,6 +160,11 @@ void setup()
         }
     }
 #endif
+
+    if (MOTOR_TASK_DISABLE_ON_BOOT && config.motorTaskAvailable())
+    {
+        config.getMotorTask()->disable();
+    }
 }
 
 void loop()

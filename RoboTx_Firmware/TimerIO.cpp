@@ -15,9 +15,13 @@ bool beginTimer(float rate);
 
 // ----------------------------------------------------------------------------------------------------
 
-PROGMEM const uint8_t button_pin[] = {DIGITAL_INPUT_PINS};
-
-#define button_pin_count (MAX_INPUTS < sizeof(button_pin) ? MAX_INPUTS : sizeof(button_pin))
+#if defined(DIGITAL_INPUT_PINS)
+    PROGMEM const uint8_t button_pin[] = {DIGITAL_INPUT_PINS,0}; // A single byte array causes a problem, so appending a 0 byte as workaround. 
+    const uint8_t button_pin_count = (uint8_t)(MAX_INPUTS < sizeof(button_pin) ? MAX_INPUTS : sizeof(button_pin))-1;
+#elif
+    PROGMEM const uint8_t button_pin[] = {};
+    const uint8_t button_pin_count = 0;
+#endif
 
 // ----------------------------------------------------------------------------------------------------
 

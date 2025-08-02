@@ -54,7 +54,7 @@
 #define PROFILE_UNO_MOTOR_PLUS      4
 #define PROFILE_ARDU_MOTOR_SHIELD   5
 #define PROFILE_ROBOT_ARM_4DF       6
-#define PROFILE_POLOLU_3PI          7
+#define PROFILE_HOME_AUTOMATION     7
 
 #define SELECTED_PROFILE        PROFILE_MULTI_FUNC_SHIELD
 
@@ -287,29 +287,40 @@
     #define TRIGGER_PIN                  3
     #define TRIGGER_ON_VALUE            LOW
     
-#elif SELECTED_PROFILE == PROFILE_POLOLU_3PI
+#elif SELECTED_PROFILE == PROFILE_HOME_AUTOMATION
 
-    #define ANALOG_ENABLED_A            6,7         /* A6 and A7*/
-    #define DIGITAL_INPUT_PINS          9,12,13     /* actual Arduino pins */
-    #define DIGITAL_INPUTS_ENABLED      0,1,2       /* index positions that map to the actual pins */
-    #define DIGITAL_INPUTS_INVERTED     0,1,2       /* index positions that map to the actual pins */
+    #define ANALOG_ENABLED_A            0,1,2,3  /* A0, A1, A2, A3 */
+    #define DIGITAL_INPUT_PINS          4,9        /* actual Arduino pins */
+    #define DIGITAL_INPUTS_ENABLED      0,1        /* index positions that map to digital pins defined above */
+    #define DIGITAL_INPUTS_INVERTED     0,1        /* index positions that map to digital pins defined above */
 
-    #define DEFAULT_MOTOR_DRIVER    MOTOR_DRIVER_ININ
+    #define DEFAULT_MOTOR_DRIVER    MOTOR_DRIVER_HW56
 
-    #define MOTOR1_ININ_IDLE_ENABLED    true    /* Set to true to enable idling/coasting */
-    #define MOTOR1_ININ_FWD_PIN          6
-    #define MOTOR1_ININ_REV_PIN          5
-    #define MOTOR2_ININ_IDLE_ENABLED    true    /* Set to true to enable idling/coasting */
-    #define MOTOR2_ININ_FWD_PIN         11
-    #define MOTOR2_ININ_REV_PIN          3
+    #define MOTOR_TASK_DISABLE_ON_BOOT  true    /* setting to true forces PWM pins to low on Arduino boot */
+    #define MOTOR1_HW56_INV_DIR        false
+
+    #define TRIGGER_ENABLED             true    /* trigger used for beeper control */
+    #define TRIGGER_PIN                  3
+    #define TRIGGER_ON_VALUE            LOW
 
     #define SWITCH1_ENABLED             true
     #define SWITCH1_ON_VALUE            HIGH
-    #define SWITCH1_PIN                  A5
+    #define SWITCH1_PIN                  6
+    #define SWITCH2_ENABLED             true
+    #define SWITCH2_ON_VALUE            HIGH
+    #define SWITCH2_PIN                  7
+    #define SWITCH3_ENABLED             true
+    #define SWITCH3_ON_VALUE            HIGH
+    #define SWITCH3_PIN                  8
 
-    #define TRIGGER_ENABLED             true
-    #define TRIGGER_PIN                  7
-    #define TRIGGER_ON_VALUE            HIGH
+    #define SONAR_ENABLED               true
+    #define SONAR_TRIG_PIN               10
+    #define SONAR_ECHO_PIN               11
+
+    #define SERVO1_ENABLED              true
+    #define SERVO1_PIN                   12
+    #define SERVO2_ENABLED              true
+    #define SERVO2_PIN                   13
 #endif
 
 // ----------------------------------------------------------------------------

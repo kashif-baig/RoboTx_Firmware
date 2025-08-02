@@ -1,0 +1,5 @@
+# Ignore every file in this folder
+*
+# Except these files
+!.gitignore
+!arduino.json

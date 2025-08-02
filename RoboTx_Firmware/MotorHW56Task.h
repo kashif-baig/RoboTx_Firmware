@@ -35,14 +35,18 @@ protected:
     // Initializes the task and motor state.
     void init()
     {
-        pinMode(Motor1_Dir1, OUTPUT);
-        pinMode(Motor1_Dir2, OUTPUT);
-        pinMode(Motor2_Dir1, OUTPUT);
-        pinMode(Motor2_Dir2, OUTPUT);
-
+        if (Motor1_Dir1 > -1)
+        {
+            pinMode(Motor1_Dir1, OUTPUT);
+        }
         if (Motor1_Dir2 > -1)
         {
             pinMode(Motor1_Dir2, OUTPUT);
+        }
+
+        if (Motor2_Dir1 > -1)
+        {
+            pinMode(Motor2_Dir1, OUTPUT);
         }
         if (Motor2_Dir2 > -1)
         {
@@ -81,14 +85,18 @@ protected:
             }
             _motor1_driving = speedPercent!=0;
 
-            digitalWriteAlt(Motor1_Dir1, !MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving ? 0 : (fwddir ? 1 : 0));
-            if (Motor1_Dir2 > -1)
+            if (Motor1_Dir1 > -1)
             {
-                digitalWriteAlt(Motor1_Dir2, !MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving ? 0 : (fwddir ? 0 : 1));
+                digitalWriteAlt(Motor1_Dir1, !MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving ? 0 : (fwddir ? 0 : 1));
 
-                if(!MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving)
+                if (Motor1_Dir2 > -1)
                 {
-                    digitalWriteAlt(MOTOR1_HW56_PWM_PIN, 1);
+                    digitalWriteAlt(Motor1_Dir2, !MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving ? 0 : (fwddir ? 1 : 0));
+                    
+                    if(!MOTOR1_HW56_IDLE_ENABLED && !_motor1_driving)
+                    {
+                        digitalWriteAlt(MOTOR1_HW56_PWM_PIN, 1);
+                    }
                 }
             }
         }
@@ -100,14 +108,18 @@ protected:
             }
             _motor2_driving = speedPercent!=0;
 
-            digitalWriteAlt(Motor2_Dir1, !MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving ? 0 : (fwddir ? 1 : 0));
-            if (Motor2_Dir2 > -1)
+            if (Motor2_Dir1 > -1)
             {
-                digitalWriteAlt(Motor2_Dir2, !MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving ? 0 : (fwddir ? 0 : 1));
-                
-                if(!MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving)
+                digitalWriteAlt(Motor2_Dir1, !MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving ? 0 : (fwddir ? 0 : 1));
+
+                if (Motor2_Dir2 > -1)
                 {
-                    digitalWriteAlt(MOTOR2_HW56_PWM_PIN, 1);
+                    digitalWriteAlt(Motor2_Dir2, !MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving ? 0 : (fwddir ? 1 : 0));
+                    
+                    if(!MOTOR2_HW56_IDLE_ENABLED && !_motor2_driving)
+                    {
+                        digitalWriteAlt(MOTOR2_HW56_PWM_PIN, 1);
+                    }
                 }
             }
         }

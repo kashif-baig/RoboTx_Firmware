@@ -9,6 +9,9 @@
 #define MOTOR_TASK_ACCEL_INTERVAL_MS 50
 #define MOTOR_TASK_INFINITE_DURATION -1
 
+#ifndef MOTOR_TASK_DISABLE_ON_BOOT
+    #define MOTOR_TASK_DISABLE_ON_BOOT  false
+#endif
 
 #ifndef MOTOR1_ININ_IDLE_ENABLED
     #define MOTOR1_ININ_IDLE_ENABLED   true    /* Set to true to enable idling/coasting */
@@ -67,7 +70,7 @@
     #define MOTOR1_HW56_IDLE_ENABLED true
 #endif
 #ifndef MOTOR1_HW56_DIR1_PIN
-    #define MOTOR1_HW56_DIR1_PIN  4
+    #define MOTOR1_HW56_DIR1_PIN  -1
 #endif
 #ifndef MOTOR1_HW56_DIR2_PIN
     #define MOTOR1_HW56_DIR2_PIN  -1
@@ -80,7 +83,7 @@
     #define MOTOR2_HW56_INV_DIR false
 #endif
 #ifndef MOTOR2_HW56_DIR1_PIN
-    #define MOTOR2_HW56_DIR1_PIN  7
+    #define MOTOR2_HW56_DIR1_PIN  -1
 #endif
 #ifndef MOTOR2_HW56_DIR2_PIN
     #define MOTOR2_HW56_DIR2_PIN  -1
