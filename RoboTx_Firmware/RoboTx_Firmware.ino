@@ -117,7 +117,7 @@ void setup()
 
     analogTask.initialize();
     analogTask.disable();
-    analogTask.setSampleRate(10);
+    analogTask.setSampleRate(ANALOG_SAMPLE_FREQ_HZ);
     analogTask.setAnalogMessage(&analogMessage);
 
     sonarTask.initialize();

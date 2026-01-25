@@ -157,8 +157,13 @@
 
 #elif SELECTED_PROFILE == PROFILE_UNO_MOTOR_PLUS
 
-    #define DEFAULT_MOTOR_DRIVER    MOTOR_DRIVER_HW56
+    #define ANALOG_SAMPLE_FREQ_HZ        50
+    #define ANALOG_ENABLED_A            6,7         /* A6, A7*/
+    #define DIGITAL_INPUT_PINS          A0,A1,A2    /* actual Arduino pins */
+    #define DIGITAL_INPUTS_ENABLED      0,1,2       /* index positions that map to digital pins defined above */
+    #define DIGITAL_INPUTS_INVERTED     0,1,2       /* index positions that map to digital pins defined above */
 
+    #define DEFAULT_MOTOR_DRIVER    MOTOR_DRIVER_HW56
     #define MOTOR1_HW56_DIR1_PIN         4
     #define MOTOR2_HW56_DIR1_PIN         7
     #define MOTOR1_HW56_INV_DIR        false
@@ -334,6 +339,10 @@
 //----------------------------------------------------------------------------
 
 // Default profile settings if not set in the profile sections above.
+
+#ifndef ANALOG_SAMPLE_FREQ_HZ
+    #define ANALOG_SAMPLE_FREQ_HZ          25      /* Analog sampling frequency expressed as Hz. Max 50 Hz.*/
+#endif
 
 #ifndef LED_7SEG_ENABLED
     #define LED_7SEG_ENABLED            false

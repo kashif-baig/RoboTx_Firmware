@@ -63,6 +63,15 @@ protected:
             return;
         }
 
+        if (motor == Motor1 && MOTOR1_HW56_INV_DIR)
+        {
+            speedPercent = speedPercent * -1;
+        }
+        else if (motor == Motor2 && MOTOR2_HW56_INV_DIR)
+        {
+            speedPercent = speedPercent * -1;
+        }
+
         bool fwddir = speedPercent > 0 ? 1 : 0;
 
         int8_t tmpSpeedPercent = speedPercent;
@@ -79,10 +88,6 @@ protected:
 
         if (motor == Motor1)
         {
-            if (MOTOR1_HW56_INV_DIR)
-            {
-                fwddir = !fwddir;
-            }
             _motor1_driving = speedPercent!=0;
 
             if (Motor1_Dir1 > -1)
@@ -102,10 +107,6 @@ protected:
         }
         else
         {
-            if (MOTOR2_HW56_INV_DIR)
-            {
-                fwddir = !fwddir;
-            }
             _motor2_driving = speedPercent!=0;
 
             if (Motor2_Dir1 > -1)
