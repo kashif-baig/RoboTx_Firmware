@@ -2,6 +2,7 @@
 #define BUTTON_MESSAGE_H
 
 #include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "Settings.h"
 
 const char *ButtonMessageType = "B";
@@ -9,7 +10,7 @@ const char *ButtonMessageType = "B";
 /**
  * Serializes an input event, i.e. button press (or release) value.
  */
-class ButtonMessage : public SerializableMessage
+class ButtonMessage : public SerializableMessageLite
 {
 public:
 

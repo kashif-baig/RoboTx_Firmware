@@ -13,7 +13,7 @@ class Connection : public Task
     bool _opened = false;
     bool _isAlive = false;
 
-    const uint32_t _durationMs = 5000;
+    const uint32_t _durationMs = 4000;
 
     /**
      * Sets the keep alive state of the connection.

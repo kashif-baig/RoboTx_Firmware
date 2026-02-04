@@ -20,9 +20,9 @@ class PulseCounterMessage;
 class PulseCounterTask : public Task
 {
 public:
-    PulseCounterTask(SerializableMessageSender *messageSender)
+    PulseCounterTask()
     {
-        _messageSender = messageSender;
+
     }
 
     // Must set instance of PulseCounterMessage in order to serialize pulse period to client.
@@ -53,8 +53,6 @@ public:
         _pulseInPeriod_safe = 0;
         _pulseInState = 0;
         _pulseInTrigger = trigger;
-        //pulseInTotalCount_volatile = 0;
-        //pulseInTotalCount_safe = 0;
 
         _pulseInWriteInProgress = 0;
         _pulseInEnabled = true;
@@ -98,8 +96,6 @@ public:
             // Has the state of the pulse changed?
             if ((_pulseInState != pulseInStateNow) && (pulseInStateNow == _pulseInTrigger))
             {
-                //pulseInTotalCount_volatile++;
-
                 _pulseInPeriod_volatile = (_pulseInPeriodCounter >= _pulseInTimeOut ? 0 : _pulseInPeriodCounter);
                 _pulseInPeriodCounter = 0;
             }
@@ -118,7 +114,6 @@ public:
             if (!_pulseInReadInProgress)
             {
                 _pulseInPeriod_safe = _pulseInPeriod_volatile;
-                //pulseInTotalCount_safe = pulseInTotalCount_volatile;
             }
 
             if (_pulseInState != pulseInStateNow)
@@ -129,11 +124,9 @@ public:
     }
 
 private:
-    SerializableMessageSender *_messageSender;
     PulseCounterMessage *_pulseCounterMessage;
 
     uint8_t pulseInBit;
-    //uint8_t pulseInPort;
 
 #if defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
    const volatile uint16_t *_portInpReg;

@@ -16,10 +16,7 @@ void PulseCounterTask::doEvents()
         
         uint16_t pulsePeriod = getPulseInPeriod();
 
-        if (!_messageSender->messageQueued(_pulseCounterMessage))
-        {
-            _pulseCounterMessage->setPulsePeriod(pulsePeriod);
-            _messageSender->queueMessage(_pulseCounterMessage);
-        }
+        _pulseCounterMessage->setPulsePeriod(pulsePeriod);
+        _pulseCounterMessage->serialize(&MsgSerial);
     }
 }

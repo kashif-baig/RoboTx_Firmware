@@ -39,15 +39,14 @@ class AnalogTask : public Task
 {
 private:
     AnalogTaskState _taskState;
-    SerializableMessageSender *_messageSender;
     AnalogMessage *_analogMessage;
 
     uint16_t _taskIntervalMs;
 
     bool _enabled = true;
 
-    uint16_t _analog_val[ANALOG_PIN_COUNT];// = {0,0,0,0,0,0};
-    bool _analog_enabled[ANALOG_PIN_COUNT];// = {false,false,false,false,false,false};
+    uint16_t _analog_val[ANALOG_PIN_COUNT];
+    bool _analog_enabled[ANALOG_PIN_COUNT];
     uint8_t _readPinIdx = 0;
 
 public:
@@ -56,13 +55,12 @@ public:
      * Constructs instance with reference to the message sender, which regulates the sending of
      * messages over Serial.
      */
-    AnalogTask(SerializableMessageSender *messageSender)
+    AnalogTask()
     {
         _taskState = AnalogTaskState_Delay;
 
         setTime(ANALOG_TASK_DEFAULT_INTERVAL_MS);
         _taskIntervalMs = ANALOG_TASK_DEFAULT_INTERVAL_MS;
-        _messageSender = messageSender;
 
         for (uint8_t i=0; i<ANALOG_PIN_COUNT; i++)
         {
@@ -75,13 +73,6 @@ public:
      * Initialize Analog pins for input mode.
      */
     void initialize();
-    // {
-    //     for (uint8_t i=0; i<ANALOG_PIN_COUNT; i++)
-    //     {
-    //         pinMode(_analog_pin[i], INPUT);
-    //     }
-    // }
-
 
     /**
      * Sets the number of times per second analog values are sampled and sent.
@@ -135,7 +126,6 @@ public:
      */
     bool inputEnabledByIdx (uint8_t pinIdx) const
     {
-        //pin = constrain(pin, 0, ANALOG_PIN_COUNT-1);
         if (pinIdx >= ANALOG_PIN_COUNT)
         {
             return false;
@@ -163,7 +153,6 @@ public:
      */
     uint16_t inputValueByIdx(uint8_t pinIdx) const
     {
-        //pin = constrain(pin, 0, ANALOG_PIN_COUNT-1);
         if (pinIdx >= ANALOG_PIN_COUNT)
         {
             return 0;
@@ -187,10 +176,6 @@ public:
     void disable()
     {
         _enabled = false;
-        // for (uint8_t i=0; i < ANALOG_PIN_COUNT; i++)
-        // {
-        //     enablePin(i, false);
-        // }
     }
 
 

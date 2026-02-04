@@ -3,6 +3,7 @@
 
 #include "ColourTask.h"
 #include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "Settings.h"
 
 class ColourTask;
@@ -13,7 +14,7 @@ extern const char *ColourMessageType;
  * Deserializes request for configuring colour sensor.
  * Serializes response with colour values.
  */
-class ColourMessage : public SerializableMessage, public IDeserializableMessage
+class ColourMessage : public SerializableMessageLite, public IDeserializableMessage
 {
 public:
 

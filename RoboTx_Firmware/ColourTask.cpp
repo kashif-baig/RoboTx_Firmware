@@ -18,7 +18,7 @@ void ColourTask::doEvents()
         
         setRGB();
 
-        _messageSender->queueMessageIfNotQueued(_colourMessage);
+        _colourMessage->serialize(&MsgSerial);
 
     }
 }

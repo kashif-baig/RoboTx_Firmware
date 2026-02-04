@@ -2,7 +2,6 @@
 #define MOTOR_DIRPWM_TASK_H
 
 #include "IMotorTask.h"
-// #include "Settings.h"
 
 /**
  * Implements a motor task that uses a dir/pwm motor controller.
@@ -117,6 +116,8 @@ protected:
     // Initializes the task and motor state.
     void init()
     {
+        IMotorTask::init();
+        
         pinMode(Motor2_PWM, OUTPUT);
         pinMode(Motor2_Dir, OUTPUT);
         pinMode(Motor1_Dir, OUTPUT);
@@ -141,7 +142,6 @@ protected:
         }
 
         // Scale speed percent to actual +/- 20
-        //int8_t pwm = (((int16_t)constrain(speedPercent, -100, 100)) * 13) >> 6;
         int8_t pwm = constrain(speedPercent, -100, 100) / 5;
         int8_t speedPercentTmp = speedPercent;
 

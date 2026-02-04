@@ -64,12 +64,9 @@ void SonarTask::ping()
 
         int16_t distanceCm = ((micros() - timeStart) * 141) >> 13;
 
-        if (!_messageSender->messageQueued(_sonarMessage))
-        {
-            // Queue the sonar message with calculated distance, then send.
-            _sonarMessage->setDistanceCm(distanceCm);
-            _messageSender->queueMessage(_sonarMessage);
-        }
+        // Set the sonar message with calculated distance, then send.
+        _sonarMessage->setDistanceCm(distanceCm);
+        _sonarMessage->serialize(&MsgSerial);
 
         if (onAfterPing)
         {

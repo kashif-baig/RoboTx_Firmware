@@ -41,12 +41,10 @@
     #include <IRremote.hpp>
 #endif
 
-MessageSender<6> msgSender(&MsgSerial, 1);
-
-AnalogTask analogTask = AnalogTask(&msgSender);
+AnalogTask analogTask = AnalogTask();
 AnalogMessage analogMessage = AnalogMessage(&analogTask);
 
-SonarTask sonarTask = SonarTask(&msgSender, SONAR_TRIG_PIN, SONAR_ECHO_PIN);
+SonarTask sonarTask = SonarTask(SONAR_TRIG_PIN, SONAR_ECHO_PIN);
 SonarMessage sonarMessage = SonarMessage(&sonarTask);
 
 Display7SegTask display7SegTask = Display7SegTask(LED_7SEG_LATCH_PIN, LED_7SEG_CLK_PIN, LED_7SEG_DATA_PIN);
@@ -56,12 +54,12 @@ ServoManager servoManager = ServoManager(SERVO1_PIN, SERVO2_PIN, SERVO3_PIN, SER
 IrMessage irMessage;
 Connection connection;
 
-PulseCounterTask pulseCounterTask = PulseCounterTask(&msgSender);
+PulseCounterTask pulseCounterTask = PulseCounterTask();
 PulseCounterMessage pulseCounterMessage = PulseCounterMessage(&TmrIO, &pulseCounterTask, &analogTask);
 
 Config config = Config(&display7SegTask, &TmrIO, &pulseCounterTask, &analogTask);
 
-ColourTask colourTask = ColourTask(&config, &msgSender);
+ColourTask colourTask = ColourTask(&config);
 ColourMessage colourMessage = ColourMessage(&colourTask);
 
 SwitchManager switchManager = SwitchManager(SWITCH1_PIN, SWITCH2_PIN, SWITCH3_PIN, SWITCH4_PIN);
@@ -171,20 +169,15 @@ void loop()
 {
     // Process incoming request messages over serial.
     msgListener.processMessageStream();
-    // Regulate the sending of response messages over serial.
-    msgSender.processMessageQueue();
 
-    if (!msgSender.messageQueued(&buttonMessage))
+    // Check for input button states and send over serial.
+    const uint8_t btn = TmrIO.getButton();
+    if (btn)
     {
-        // Check for input button states and send over serial.
-        const uint8_t btn = TmrIO.getButton();
-        if (btn)
+        if (connection.isOpen())
         {
-            if (connection.isOpen())
-            {
-                buttonMessage.setButtonValue(btn);
-                msgSender.queueMessage(&buttonMessage);
-            }
+            buttonMessage.setButtonValue(btn);
+            buttonMessage.serialize(&MsgSerial);
         }
     }
 
@@ -209,7 +202,7 @@ void loop()
     servoManager.doEvents();
 
 #if defined(IR_REMOTE_ENABLED)
-    if (!msgSender.messageQueued(&irMessage) && !(config.i2CInUse() && config.mcuIsLeonardo()))
+    if (!(config.i2CInUse() && config.mcuIsLeonardo()))
     {
         // Check for IR commands and send over serial.
         if (IrReceiver.decode())
@@ -219,7 +212,7 @@ void loop()
                 if (connection.isOpen())
                 {
                     irMessage.setCommand(IrReceiver.decodedIRData.command);
-                    msgSender.queueMessage(&irMessage);
+                    irMessage.serialize(&MsgSerial);
                 }
             }
             IrReceiver.resume();
@@ -234,10 +227,12 @@ void userISR()
     {
         sonarTask.doISR();
     }
+#if DEFAULT_MOTOR_DRIVER == MOTOR_DRIVER_DIRPWM || DEFAULT_MOTOR_DRIVER == MOTOR_DRIVER_ININ
     if (config.motorTaskAvailable())
     {
         config.getMotorTask()->doISR();
     }
+#endif
     pulseCounterTask.doISR();
 
     if (LED_7SEG_ENABLED && display7SegTask.isBackgroundTask())

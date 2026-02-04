@@ -12,14 +12,13 @@ class ColourMessage;
 
 #if !defined(COLOUR_SENSING_ENABLED)
 
-// Dummy task for Leonardo.
 // On the Leonardo, the I2C pins clash with digital pins in use for other things (e.g. IR receiver).
 class ColourTask : public Task
 {
 protected:
     void initialize(){}
 public:
-    ColourTask(Config *config, SerializableMessageSender *messageSender){}
+    ColourTask(Config *config){}
     void setColourMessage(ColourMessage *colourMessage){}
     void doEvents(){}
     void setRGB(){}
@@ -58,8 +57,8 @@ private:
     uint16_t _g = 0;
     uint16_t _b = 0;
 
-    bool _enabled = false;// true;
-    SerializableMessageSender *_messageSender;
+    bool _enabled = false;
+
     ColourMessage *_colourMessage;
     Config *_config;
     bool _initialized = false;
@@ -85,9 +84,8 @@ public:
      * Constructs instance with reference to Config and the message sender, which regulates the sending of
      * messages over Serial.
      */
-    ColourTask(Config *config, SerializableMessageSender *messageSender)
+    ColourTask(Config *config)
     {
-        _messageSender = messageSender;
         _config = config;
     }
 

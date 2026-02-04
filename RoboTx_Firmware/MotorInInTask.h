@@ -2,7 +2,6 @@
 #define MOTOR_ININ_TASK_H
 
 #include "IMotorTask.h"
-// #include "Settings.h"
 
 /**
  * Implements a motor task that uses an in/in motor controller.
@@ -125,6 +124,8 @@ protected:
     // Initializes the task and motor state.
     void init()
     {
+        IMotorTask::init();
+        
         pinMode(Motor2_In1, OUTPUT);
         pinMode(Motor2_In2, OUTPUT);
         pinMode(Motor1_In3, OUTPUT);
@@ -142,7 +143,6 @@ protected:
         }
 
         // Scale speed percent to actual +/- 20
-        //int8_t pwm = (((int16_t)constrain(speedPercent + 2, -100, 100)) * 13) >> 6;
         int8_t pwm = constrain(speedPercent, -100, 100) / 5;
         int8_t speedPercentTmp = speedPercent;
 

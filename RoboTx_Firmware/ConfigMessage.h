@@ -10,8 +10,6 @@ enum ConfigCmd : uint8_t
     ConfigCmdInpEvt,
     ConfigCmdInpAnlg,
     ConfigCmdInpInv,
-    //ConfigCmdMotorInIn,
-    ConfigCmdMotorDirPwm
 };
 
 const char *ConfigMessageType = "CFG";
@@ -52,40 +50,7 @@ public:
         {
             case 0:
             {
-                if (strcasecmp_P(propertyValue, PSTR("InIn"))==0)
-                {
-                    //_cmd = ConfigCmdMotorInIn;
-                    _config->useMotorDriverInIn();
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("DirPwm"))==0)
-                {
-                    _cmd = ConfigCmdMotorDirPwm;
-                }
-                // else if (strcasecmp_P(propertyValue, PSTR("L298"))==0)
-                // {
-                //     _config->useMotorDriverL298();
-                // }
-                else if (strcasecmp_P(propertyValue, PSTR("HW56"))==0)
-                {
-                    _config->useMotorDriverHW56();
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("7SegNorm"))==0)
-                {
-                    _config->setDisplayInverse(false);
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("7SegInv"))==0)
-                {
-                    _config->setDisplayInverse(true);
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("7SegLTR"))==0)
-                {
-                    _config->setDisplayLTR();
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("7SegRTL"))==0)
-                {
-                    _config->setDisplayRTL();
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("InpInv"))==0)
+                if (strcasecmp_P(propertyValue, PSTR("InpInv"))==0)
                 {
                     _cmd = ConfigCmdInpInv;
                 }
@@ -96,14 +61,6 @@ public:
                 else if (strcasecmp_P(propertyValue, PSTR("InpAnlg"))==0)
                 {
                     _cmd = ConfigCmdInpAnlg;
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("BprInv"))==0)
-                {
-                    _config->setBeeperInverted(true);
-                }
-                else if (strcasecmp_P(propertyValue, PSTR("BprNorm"))==0)
-                {
-                    _config->setBeeperInverted(false);
                 }
                 break;
             }
@@ -179,20 +136,6 @@ public:
                         _config->invertDigitalInput(analogPinIdx, inverted);
                     }
                 }
-            }
-            // else if (_cmd == ConfigCmdMotorInIn)
-            // {
-            //     _config->useMotorDriverInIn();
-            // }
-            else if (_cmd == ConfigCmdMotorDirPwm)
-            {
-                bool useEnable = MOTOR_DIRPWM_EN_DEFAULT;
-
-                if (strlen(_param1Text) > 0)
-                {
-                    useEnable = _param1Text[0] == 'T';
-                }
-                _config->useMotorDriverDirPwm(useEnable);
             }
         }
     }

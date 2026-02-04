@@ -126,12 +126,6 @@
     #define MOTOR1_DIRPWM_INV_DIR      false   /* Set to true to invert motor 1 direction */
     #define MOTOR2_DIRPWM_INV_DIR      false   /* Set to true to invert motor 2 direction */
 
-    #define LED_7SEG_ENABLED            true
-    #define LED_7SEG_RTL                true   /* Enable/disable Right to Left display order */
-    #define LED_7SEG_DATA_PIN            3
-    #define LED_7SEG_LATCH_PIN           5
-    #define LED_7SEG_CLK_PIN             6
-
     #define SONAR_ENABLED               true
     #define SONAR_TRIG_PIN               7
     #define SONAR_ECHO_PIN               8

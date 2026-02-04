@@ -2,6 +2,7 @@
 #define PULSE_COUNTER_MESSAGE_H
 
 #include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "TimerIO.h"
 #include "PulseCounterTask.h"
 #include "AnalogTask.h"
@@ -13,7 +14,7 @@ class PulseCounterTask;
 /**
  * Dserializes request to enable or disable pulse counter.
  */
-class PulseCounterMessage : public SerializableMessage, public IDeserializableMessage
+class PulseCounterMessage : public SerializableMessageLite, public IDeserializableMessage
 {
 public:
 

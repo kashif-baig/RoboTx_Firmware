@@ -18,10 +18,9 @@ class SonarMessage;
 class SonarTask
 {
 public:
-   SonarTask(SerializableMessageSender *messageSender, uint8_t trigPin, uint8_t echoPin)
+   SonarTask(uint8_t trigPin, uint8_t echoPin)
     : _trigPin(trigPin), _echoPin(echoPin)
    {
-      _messageSender = messageSender;
    }
 
    // Inialises the trigger and echo pins.
@@ -37,7 +36,6 @@ public:
          _bit = digitalPinToBitMask(_echoPin);
           uint8_t port = digitalPinToPort(_echoPin);
          _portInpReg = portInputRegister(port);
-         //_stateMask = (HIGH ? _bit : 0);
       }
    }
 
@@ -71,7 +69,6 @@ private:
    const uint8_t _echoPin;
 
    uint8_t _bit;
-   //uint8_t _port;
 
 #if defined(ARDUINO_UNOR4_MINIMA) || defined(ARDUINO_UNOR4_WIFI)
    const volatile uint16_t *_portInpReg;
@@ -79,11 +76,8 @@ private:
    volatile uint8_t *_portInpReg;
 #endif
 
-   //uint8_t _stateMask;
-
    volatile uint8_t _sonarTimeoutMs = 0;
 
-   SerializableMessageSender *_messageSender;
    SonarMessage *_sonarMessage;
 };
 

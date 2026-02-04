@@ -2,6 +2,7 @@
 #define ANALOG_MESSAGE_H
 
 #include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "AnalogTask.h"
 #include "Settings.h"
 
@@ -13,7 +14,7 @@ extern const char *AnalogMessageType;
  * Deserializes request for configuring analog pins A0, A1, A2, A3, A4 and A5. Serializes response
  * with values of those analog pins that have been enabled.
  */
-class AnalogMessage : public SerializableMessage, public IDeserializableMessage
+class AnalogMessage : public SerializableMessageLite, public IDeserializableMessage
 {
 public:
 

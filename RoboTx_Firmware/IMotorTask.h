@@ -150,7 +150,11 @@ protected:
     }
 
     // Initializes the task and motor state.
-    virtual void init() = 0;
+    virtual void init()
+    {
+        setAcceleration(Motor1, 0);
+        setAcceleration(Motor2, 0);
+    }
 
     // Drives a motor with a speed specified as a +/- percentage.
     virtual void driveMotor(uint8_t motor, int8_t speedPercent) = 0;

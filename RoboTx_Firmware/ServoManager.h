@@ -106,31 +106,43 @@ public:
  */
 class ServoManager
 {
+#if (SERVO1_ENABLED == true)
     ManagedServo _servo1;
+#endif
+#if (SERVO2_ENABLED == true)
     ManagedServo _servo2;
+#endif
+#if (SERVO3_ENABLED == true)
     ManagedServo _servo3;
+#endif
+#if (SERVO4_ENABLED == true)
     ManagedServo _servo4;
+#endif
 
 public:
     ServoManager(uint8_t servo1Pin, uint8_t servo2Pin, uint8_t servo3Pin, uint8_t servo4Pin)
     {
         setTime();
-        if (SERVO1_ENABLED)
+#if (SERVO1_ENABLED == true)
         {
             _servo1.setPin(servo1Pin);
         }
-        if (SERVO2_ENABLED)
+#endif
+#if (SERVO2_ENABLED == true)
         {
             _servo2.setPin(servo2Pin);
         }
-        if (SERVO3_ENABLED)
+#endif
+#if (SERVO3_ENABLED == true)
         {
             _servo3.setPin(servo3Pin);
         }
-        if (SERVO4_ENABLED)
+#endif
+#if (SERVO4_ENABLED == true)
         {
             _servo4.setPin(servo4Pin);
         }
+#endif
     }
 
     /**
@@ -240,34 +252,30 @@ private:
         {
             case 1:
             {
-                if (SERVO1_ENABLED)
-                {
-                    return &_servo1;
-                }
+#if (SERVO1_ENABLED == true)
+                return &_servo1;
+#endif
                 break;
             }
             case 2:
             {
-                if (SERVO2_ENABLED)
-                {
-                    return &_servo2;
-                }
+#if (SERVO2_ENABLED == true)
+                return &_servo2;
+#endif
                 break;
             }
             case 3:
             {
-                if (SERVO3_ENABLED)
-                {
-                    return &_servo3;
-                }
+#if (SERVO3_ENABLED == true)
+                return &_servo3;
+#endif
                 break;
             }
             case 4:
             {
-                if (SERVO4_ENABLED)
-                {
-                    return &_servo4;
-                }
+#if (SERVO4_ENABLED == true)
+                return &_servo4;
+#endif
                 break;
             }
         }

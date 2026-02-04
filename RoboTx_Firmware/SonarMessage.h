@@ -2,6 +2,7 @@
 #define SONAR_MESSAGE_H
 
 #include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "SonarTask.h"
 
 extern const char *SonarMessageType;
@@ -11,7 +12,7 @@ class SonarTask;
 /**
  * Deserializes request to send a sonar ping.
  */
-class SonarMessage : public SerializableMessage, public IDeserializableMessage
+class SonarMessage : public SerializableMessageLite, public IDeserializableMessage
 {
 public:
 

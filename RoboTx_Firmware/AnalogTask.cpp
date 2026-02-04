@@ -61,6 +61,8 @@ void AnalogTask::doEvents()
 
             if (inputEnabledByIdx(_readPinIdx))
             {
+                // Read analog value twice to get a more stable value.
+                analogRead(pgm_read_byte(&_analog_pin[_readPinIdx]));
                 _analog_val[_readPinIdx] = analogRead(pgm_read_byte(&_analog_pin[_readPinIdx]));
             }
             _readPinIdx++;
@@ -77,7 +79,7 @@ void AnalogTask::doEvents()
 
         if (enabled() && anyInputsEnabled())
         {
-            _messageSender->queueMessageIfNotQueued(_analogMessage);
+            _analogMessage->serialize(&MsgSerial);
         }
         break;
     }
