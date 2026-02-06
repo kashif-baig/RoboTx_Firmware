@@ -87,7 +87,7 @@ private:
     uint8_t buttonState[MAX_INPUTS] = {0, 0, 0, 0, 0}; // current up or down state
     uint8_t buttonPressTime[MAX_INPUTS] = {0, 0, 0, 0, 0};
 
-    volatile uint8_t beeperModifyInProgress = 0;
+    volatile bool beeperModifyInProgress = false;
     volatile uint8_t beeperState = 0; // 0=on period; 1=off period
     volatile uint16_t beeperOnPeriodReloadValue = 0;
     volatile uint16_t beeperOffPeriodReloadValue = 0;
@@ -97,6 +97,9 @@ private:
     volatile uint16_t beeperLoopCycleCounter = 0;
     volatile uint16_t beeperLoopDelayPeriodReloadValue = 0;
     volatile uint8_t beeperInverted = 1;
+
+    uint8_t beeperSignalOsc = 0;
+    bool beeperEngaged = false;
 
     // AVR port specfics
 #if defined(AVR)
@@ -109,7 +112,8 @@ private:
 
     volatile bool BUTTON_ENABLED[MAX_INPUTS] = {false, false, false, false, false};
 
-    void writeBeeper(uint8_t value);
+    void writeBeeper(uint8_t value, bool force = false);
+    void writeBeeperOsc();
 
     // Pointer to user interrupt with frequency of 1khz.
     void (*volatile userInterrupt)() = 0;

@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM10",
+    "port": "COM13",
     "sketch": "RoboTx_Firmware.ino",
     "output": "../.build/RoboTx_Firmware"
 }

@@ -395,6 +395,9 @@
     #define TRIGGER_PIN                  3
     #define TRIGGER_ON_VALUE            LOW
 #endif
+#ifndef TRIGGER_SIG_OSC_ENABLED
+    #define TRIGGER_SIG_OSC_ENABLED     false
+#endif
 
 //----------------------------------------------------------------------------
 

@@ -53,7 +53,7 @@ void TimerIO::init()
     {
         /* Set the buzzer pin to an output and turn the buzzer off */
         pinMode(TRIGGER_PIN, OUTPUT);
-        writeBeeper(0);
+        writeBeeper(0, true);
     }
 }
 
@@ -188,12 +188,12 @@ void TimerIO::beep(uint16_t onPeriod, uint16_t offPeriod, uint8_t cycles, uint16
 {
     cycles = cycles == 0 ? 1 : cycles;
 
-    beeperModifyInProgress = 1; // must do this first before changing volatile fields.
+    beeperModifyInProgress = true; // must do this first before changing volatile fields.
 
     if (onPeriod == 0)
     {
         // Turn off beeper.
-        writeBeeper(0);
+        writeBeeper(0, true);
     }
 
     beeperState = 0;
@@ -207,13 +207,13 @@ void TimerIO::beep(uint16_t onPeriod, uint16_t offPeriod, uint8_t cycles, uint16
     beeperLoopCycleCounter = loopCycles;
     beeperLoopDelayPeriodReloadValue = loopDelayPeriod * 10;
 
-    beeperModifyInProgress = 0; // must do this last.
+    beeperModifyInProgress = false; // must do this last.
 }
 
 // ----------------------------------------------------------------------------------------------------
 void TimerIO::setBeepOffPeriod(uint16_t offPeriod)
 {
-    beeperModifyInProgress = 1; // must do this first before changing volatile fields.
+    beeperModifyInProgress = true; // must do this first before changing volatile fields.
 
     if (beeperState == 1)
     {
@@ -224,7 +224,7 @@ void TimerIO::setBeepOffPeriod(uint16_t offPeriod)
     }
 
     beeperOffPeriodReloadValue = offPeriod * 10;
-    beeperModifyInProgress = 0; // must do this last.
+    beeperModifyInProgress = false; // must do this last.
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -239,65 +239,71 @@ void TimerIO::isrCallBack()
 {
     // Beeper control.
 
-    if (!beeperModifyInProgress && beeperOnPeriodReloadValue)
+    if (!beeperModifyInProgress && beeperOnPeriodReloadValue > 0)
     {
         if (beeperPeriodCounter == 0)
         {
             switch (beeperState)
             {
-            case 0: // on period
-                if (beeperOffPeriodReloadValue)
+                case 0: // on period
                 {
-                    beeperPeriodCounter = beeperOffPeriodReloadValue;
-                    beeperState = 1;
-                    break;
-                }
-                // Fall thru to next state immediately.
-            case 1: // off period
-                beeperCycleCounter--;
-                if (beeperCycleCounter)
-                {
-                    beeperPeriodCounter = beeperOnPeriodReloadValue;
-                    beeperState = 0;
-                    break;
-                }
-                else
-                {
-                    beeperCycleCounter = beeperCycleReloadValue;
-                    beeperPeriodCounter = beeperLoopDelayPeriodReloadValue;
-                    beeperState = 2;
-
-                    if (beeperLoopDelayPeriodReloadValue)
+                    if (beeperOffPeriodReloadValue > 0)
                     {
+                        beeperPeriodCounter = beeperOffPeriodReloadValue;
+                        beeperState = 1;
                         break;
                     }
+                    // Fall thru to next state immediately.
                 }
-                // Fall thru to next state immediately.
-            case 2:                              // loop cycle delay period
-                if (beeperLoopCycleCounter == 0) // loop beeper indefinitely
+                case 1: // off period
                 {
-                    beeperPeriodCounter = beeperOnPeriodReloadValue;
-                    beeperState = 0;
-                }
-                else
-                {
-                    beeperLoopCycleCounter--;
-                    if (beeperLoopCycleCounter == 0)
+                    beeperCycleCounter--;
+                    if (beeperCycleCounter > 0)
                     {
-                        beeperOnPeriodReloadValue = 0; // beeper activity has now ended.
-                        writeBeeper(0);
+                        beeperPeriodCounter = beeperOnPeriodReloadValue;
+                        beeperState = 0;
+                        break;
                     }
                     else
+                    {
+                        beeperCycleCounter = beeperCycleReloadValue;
+                        beeperPeriodCounter = beeperLoopDelayPeriodReloadValue;
+                        beeperState = 2;
+
+                        if (beeperLoopDelayPeriodReloadValue > 0)
+                        {
+                            break;
+                        }
+                    }
+                    // Fall thru to next state immediately.
+                }
+                case 2:                              // loop cycle delay period
+                {
+                    if (beeperLoopCycleCounter == 0) // loop beeper indefinitely
                     {
                         beeperPeriodCounter = beeperOnPeriodReloadValue;
                         beeperState = 0;
                     }
+                    else
+                    {
+                        beeperLoopCycleCounter--;
+                        if (beeperLoopCycleCounter == 0)
+                        {
+                            beeperOnPeriodReloadValue = 0; // beeper activity has now ended.
+                            writeBeeper(0);
+                        }
+                        else
+                        {
+                            beeperPeriodCounter = beeperOnPeriodReloadValue;
+                            beeperState = 0;
+                        }
+                    }
+                    break;
                 }
-                break;
             }
         }
 
-        if (beeperPeriodCounter)
+        if (beeperPeriodCounter > 0)
         {
             beeperPeriodCounter--;
         }
@@ -373,6 +379,7 @@ void TimerIO::isrCallBack()
             }
         }
     }
+    writeBeeperOsc();
     if (userInterrupt)
     {
         userInterrupt();
@@ -381,20 +388,63 @@ void TimerIO::isrCallBack()
 
 /* ---------------------------------------------------------------------- */
 
-void TimerIO::writeBeeper(uint8_t value)
+void TimerIO::writeBeeper(uint8_t value, bool force)
 {
     if (TRIGGER_ENABLED)
     {
+        bool valueModified = false;
+
+        if (value > 0 && (force || !beeperEngaged))
+        {
+            beeperEngaged = true;
+            valueModified = true;
+        }
+        else if (value == 0 && (force || beeperEngaged))
+        {
+            beeperEngaged = false;
+            valueModified = true;
+        }
+
+        if (valueModified)
+        {
 #if defined(AVR)
-    //digitalWriteAlt(TRIGGER_PIN, value ^ beeperInverted);
-        value = value ^ beeperInverted;
-        writePortAVR(beeperPortReg, beeperPortbit, value);
+            value = value ^ beeperInverted;
+            writePortAVR(beeperPortReg, beeperPortbit, value);
 #else
-        digitalWrite(TRIGGER_PIN, value ^ beeperInverted);
+            digitalWrite(TRIGGER_PIN, value ^ beeperInverted);
 #endif
+        }
     }
 }
 
+void TimerIO::writeBeeperOsc()
+{
+    if (TRIGGER_ENABLED && TRIGGER_SIG_OSC_ENABLED)
+    {
+        uint8_t value = 0;
+
+        if (beeperEngaged)
+        {
+            if (beeperSignalOsc > 0)
+            {
+                value = 1;
+                beeperSignalOsc--;
+            }
+            else
+            {
+                value = 0;
+                beeperSignalOsc = 1;
+            }
+
+#if defined(AVR)
+            value = value ^ beeperInverted;
+            writePortAVR(beeperPortReg, beeperPortbit, value);
+#else
+            digitalWrite(TRIGGER_PIN, value ^ beeperInverted);
+#endif
+        }
+    }
+}
 // ----------------------------------------------------------------------------------------------------
 
 #if defined(AVR)
