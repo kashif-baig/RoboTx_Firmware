@@ -7,7 +7,9 @@
 #include <Arduino.h>
 
 #define PULSE_COUNTER_TASK_INTERVAL_MS 50
-#define PULSE_COUNTER_PIN   A2
+#ifndef PULSE_COUNTER_PIN
+    #define PULSE_COUNTER_PIN   A2
+#endif
 
 class PulseCounterMessage;
 
@@ -32,7 +34,7 @@ public:
     }
 
     // Initializes and enables the pulse counter. Used for counting pulses applied to an input pin. Max pulse frequency 500hz.
-    void enable(uint8_t pin = A2,        // input pin
+    void enable(uint8_t pin,        // input pin
               uint16_t timeOut = 3000, // the number of milliseconds to wait for a pulse, before resetting pulse in period to 0.
               uint8_t trigger = LOW    // trigger counter on either rising or falling edge
     )

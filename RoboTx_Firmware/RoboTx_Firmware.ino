@@ -64,7 +64,12 @@ ColourMessage colourMessage = ColourMessage(&colourTask);
 
 SwitchManager switchManager = SwitchManager(SWITCH1_PIN, SWITCH2_PIN, SWITCH3_PIN, SWITCH4_PIN);
 
-LiquidCrystal_I2C lcd(DISPLAY_LCD_I2C_ADDR, DISPLAY_LCD_COLS, DISPLAY_LCD_ROWS);
+#if DISPLAY_LCD_I2C_MCP23008 == true
+    LiquidTWI2 lcd(DISPLAY_LCD_I2C_ADDR);
+#else
+    LiquidCrystal_I2C lcd(DISPLAY_LCD_I2C_ADDR, DISPLAY_LCD_COLS, DISPLAY_LCD_ROWS);
+#endif
+
 DisplayLcdTask displayLcdTask(&config, &lcd);
 
 MyDeserializableMessageFactory factory = MyDeserializableMessageFactory(

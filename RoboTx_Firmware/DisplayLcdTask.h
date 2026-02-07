@@ -1,10 +1,19 @@
 #ifndef DISPLAYLCD_TASK_H
 #define DISPLAYLCD_TASK_H
 
+#include "Settings.h"
 #include "Task.h"
 #include "Config.h"
-#include <LiquidCrystal_I2C.h>
-#include "Settings.h"
+#include <Wire.h>
+
+#if DISPLAY_LCD_I2C_MCP23008 == true
+    #include <LiquidTWI2.h>
+    #define MyLCD LiquidTWI2
+#else
+    #include <LiquidCrystal_I2C.h>
+    #define MyLCD LiquidCrystal_I2C
+#endif
+
 
 /**
  * Writes text to the I2C LCD display.
@@ -17,7 +26,7 @@ class DisplayLcdTask : public Task
 private:
 
     Config *_config;
-    LiquidCrystal_I2C *_lcd;
+    MyLCD *_lcd;
     bool        _initialized = false;
     uint32_t    _lightOnTime;
     bool        _lightIsOn = false;
@@ -32,7 +41,12 @@ protected:
         if (!_initialized)
         {
             _config->setI2CInUse(true);
+#if DISPLAY_LCD_I2C_MCP23008 == true
+            _lcd->setMCPType(LTI_TYPE_MCP23008);
+            _lcd->begin(DISPLAY_LCD_COLS, DISPLAY_LCD_ROWS);
+#else
             _lcd->init();
+#endif
             _initialized = true;
             _lightOnTime = millis();
         }
@@ -40,7 +54,7 @@ protected:
     }
 public:
 
-    DisplayLcdTask(Config *config, LiquidCrystal_I2C *lcd)
+    DisplayLcdTask(Config *config, MyLCD *lcd)
     {
         _config = config;
         _lcd = lcd;
@@ -80,7 +94,6 @@ public:
         {
             _lcd->clear();
             _lcd->setCursor(0, 0);
-            //lightOn();
         }
     }
 
@@ -116,7 +129,7 @@ public:
     {
         if (_enabled)
         {
-            _lcd->backlight();
+            _lcd->setBacklight(1);
             _lightIsOn = true;
             _lightOnTime = millis();
         }
@@ -128,7 +141,7 @@ public:
         if (_enabled)
         {
             _lightIsOn = false;
-            _lcd->noBacklight();
+            _lcd->setBacklight(0);
         }
     }
 };

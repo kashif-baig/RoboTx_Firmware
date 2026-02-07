@@ -15,9 +15,6 @@
     #define MsgSerial Serial
 #endif
 
-// A user defined Id string.
-#define ROBOT_ID    "Robo-Tx robot"
-
 // ----------------------------------------------------------------------------
 
 // Commenting out any of the lines immediately below makes the feature unavailable.
@@ -324,8 +321,20 @@
 
 // ----------------------------------------------------------------------------
 
+// A user defined Id string.
+#ifndef ROBOT_ID
+    #define ROBOT_ID    "Robo-Tx robot"
+#endif
+
 // I2C LCD settings
-#define DISPLAY_LCD_I2C_ADDR      0x27
+#ifndef DISPLAY_LCD_I2C_ADDR
+    #define DISPLAY_LCD_I2C_ADDR      0x27
+#endif
+
+#ifndef DISPLAY_LCD_I2C_MCP23008
+    #define DISPLAY_LCD_I2C_MCP23008 false
+#endif
+
 #define DISPLAY_LCD_COLS            16
 #define DISPLAY_LCD_ROWS             2
 #define DISPLAY_LCD_LIGHT_DURATION  10

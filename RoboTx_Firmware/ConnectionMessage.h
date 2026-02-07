@@ -73,22 +73,23 @@ public:
     {
         if (messageComplete)
         {
-            if (_connection->isOpen() && (_cmd == CR_CMD_KEEP_ALIVE || _cmd == CR_CMD_OPEN))
-            //if ((_cmd == CR_CMD_KEEP_ALIVE && _connection->isOpen()) || (_cmd == CR_CMD_OPEN && _connection->isOpen()))
+            if (_cmd == CR_CMD_OPEN)
             {
-                _connection->keepAlive();
-                return;
-            }
-            else if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE)
-            {
-                _connection->setOpen(true);
-                _analogTask->enable();
-
                 MsgSerial.write(MSG_START);
                 writeToStream(&MsgSerial, PSTR("RTx"));
                 MsgSerial.write(MSG_PROPERTY);
                 writeToStream(&MsgSerial, PSTR(ROBOT_ID));
                 MsgSerial.write(MSG_END);
+            }
+            if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE)
+            {
+                if (_connection->isOpen())
+                {
+                    _connection->keepAlive();
+                    return;
+                }
+                _connection->setOpen(true);
+                _analogTask->enable();
 
 #if defined(DIGITAL_INPUTS_ENABLED)
                 uint8_t pinIdx3[] = {DIGITAL_INPUTS_ENABLED};

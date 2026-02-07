@@ -29,7 +29,7 @@ void SonarTask::ping()
             }
         }
 
-        _sonarTimeoutMs = 2;
+        _sonarTimeoutMs = 4;
 
         // wait for the echo pulse to start
         while (!(*_portInpReg & _bit))
@@ -45,7 +45,7 @@ void SonarTask::ping()
         }
 
         //_sonarTimeoutMs = 30; // 
-        _sonarTimeoutMs = 10; // limit sonar range to 1.5 meters approx.
+        _sonarTimeoutMs = 15; // limit sonar range to 2.5 meters approx.
 
         uint32_t timeStart = micros();
 
