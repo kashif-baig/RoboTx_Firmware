@@ -186,7 +186,7 @@ public:
     }
 
     /**
-     * Sets the servo position expressed as pulse with in microseconds.
+     * Sets the servo position expressed as pulse width in microseconds.
      */
     void setServoPulse(uint8_t servoNumber, int16_t pulseWidth)
     {

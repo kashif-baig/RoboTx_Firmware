@@ -1,11 +1,9 @@
-#include <stdint.h>
 #ifndef TCS34725_Lite_H
 #define TCS34725_Lite_H
 
-#include <Wire.h>
+#include "I2C.h"
 
-#define TCS34725_ADDRESS (0x29) ///< TCS3400 device addr
-#define TCS_ID (0x12)           ///< 0x44 = TCS34721/TCS34725, 0x4D = TCS34723/TCS34727
+#define TCS_ID (0x12) ///< 0x44 = TCS34721/TCS34725, 0x4D = TCS34723/TCS34727
 #define TCS_COMMAND_BIT (0x80)
 #define TCS_CDATAL (0x14) ///< Clear channel data
 #define TCS_CDATAH (0x15)
@@ -49,29 +47,32 @@ enum : uint8_t
 class TCS34725_Lite
 {
 public:
-  TCS34725_Lite(TwoWire *pWire = &Wire, uint8_t I2C_addr = TCS34725_ADDRESS, uint8_t it = TCS_INTEGRATIONTIME_50MS, uint8_t gain = TCS_GAIN_4X)
+  TCS34725_Lite(I2C *i2c, uint8_t it = TCS_INTEGRATIONTIME_50MS, uint8_t gain = TCS_GAIN_4X)
+      : _i2c(i2c)
   {
     _tcsIntegrationTime = it;
     _tcsGain = gain;
-    _wire = pWire;
-    _I2C_addr = I2C_addr;
   }
 
   void getRGBC(uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c)
   {
-    *c = readRegword(TCS_CDATAL);
-    *r = readRegword(TCS_RDATAL);
-    *g = readRegword(TCS_GDATAL);
-    *b = readRegword(TCS_BDATAL);
+    *c = _i2c->readRegisterWord(TCS_COMMAND_BIT | TCS_CDATAL);
+    *r = _i2c->readRegisterWord(TCS_COMMAND_BIT | TCS_RDATAL);
+    *g = _i2c->readRegisterWord(TCS_COMMAND_BIT | TCS_GDATAL);
+    *b = _i2c->readRegisterWord(TCS_COMMAND_BIT | TCS_BDATAL);
   }
 
-  boolean begin()
+  bool begin()
   {
-    Wire.begin();
+    _i2c->begin();
     uint8_t x = 0;
-    readReg(TCS_ID, &x, 1);
+
+    _i2c->readRegister(TCS_COMMAND_BIT | TCS_ID, &x);
     if ((x != 0x44) && (x != 0x10))
+    {
       return false;
+    }
+
     setIntegrationtime(_tcsIntegrationTime);
     setGain(_tcsGain);
     enable();
@@ -81,75 +82,37 @@ public:
   void enable()
   {
     uint8_t data = TCS_ENABLE_PON;
-    writeReg(TCS_ENABLE, &data, 1);
+    _i2c->writeRegister(TCS_COMMAND_BIT | TCS_ENABLE, data);
     data = TCS_ENABLE_PON | TCS_ENABLE_AEN;
     delay(3);
-    writeReg(TCS_ENABLE, &data, 1);
+    _i2c->writeRegister(TCS_COMMAND_BIT | TCS_ENABLE, data);
   }
 
   void disable()
   {
     uint8_t reg = 0;
-    readReg(TCS_ENABLE, &reg, 1);
+    _i2c->readRegister(TCS_COMMAND_BIT | TCS_ENABLE, &reg);
     reg = reg & ~(TCS_ENABLE_PON | TCS_ENABLE_AEN);
-    writeReg(TCS_ENABLE, &reg, 1);
+    _i2c->writeRegister(TCS_COMMAND_BIT | TCS_ENABLE, reg);
   }
 
   void setIntegrationtime(uint8_t it)
   {
     uint8_t data = it;
-    writeReg(TCS_ATIME, &data, 1);
+    _i2c->writeRegister(TCS_COMMAND_BIT | TCS_ATIME, data);
     _tcsIntegrationTime = it;
   }
 
   void setGain(uint8_t gain)
   {
     uint8_t data = gain;
-    writeReg(TCS_CONTROL, &data, 1);
+    _i2c->writeRegister(TCS_COMMAND_BIT | TCS_CONTROL, data);
     _tcsGain = gain;
   }
 
-protected:
-  void writeReg(uint8_t Reg, void *pData, uint8_t len)
-  {
-    uint8_t *Data = (uint8_t *)pData;
-    _wire->beginTransmission(this->_I2C_addr);
-    _wire->write(TCS_COMMAND_BIT | Reg);
-    for (uint8_t i = 0; i < len; i++)
-    {
-      _wire->write(Data[i]);
-    }
-    _wire->endTransmission();
-  }
-
-  int16_t readReg(uint8_t Reg, uint8_t *Data, uint8_t len)
-  {
-    int i = 0;
-    _wire->beginTransmission(this->_I2C_addr);
-    _wire->write(TCS_COMMAND_BIT | Reg);
-    if (_wire->endTransmission() != 0)
-    {
-      return -1;
-    }
-    _wire->requestFrom((uint8_t)this->_I2C_addr, (uint8_t)len);
-    while (_wire->available())
-    {
-      Data[i++] = _wire->read();
-    }
-    return len;
-  }
-
-  uint16_t readRegword(uint8_t reg)
-  {
-    uint8_t data_buf[2];
-    readReg(reg, data_buf, 2);
-    return (data_buf[0] | data_buf[1] << 8);
-  }
-
 private:
+  I2C *const _i2c;
   uint8_t _tcsGain;
-  TwoWire *_wire;
-  uint8_t _I2C_addr;
   uint8_t _tcsIntegrationTime;
 };
 

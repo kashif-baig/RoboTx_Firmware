@@ -19,8 +19,13 @@
 
 // Commenting out any of the lines immediately below makes the feature unavailable.
 #define IR_REMOTE_ENABLED
-#define COLOUR_SENSING_ENABLED
-#define DISPLAY_LCD_ENABLED
+#define DISPLAY_LCD_AVAILABLE
+
+// Copy any of the lines below to required profile and uncomment there. 
+// #define COLOUR_SENSOR_AVAILABLE
+// #define LIGHTMETER_SENSOR_AVAILABLE
+// #define DHT20_SENSOR_AVAILABLE
+// #define MPU6050_SENSOR_AVAILABLE
 
 // ----------------------------------------------------------------------------
 /**
@@ -52,6 +57,7 @@
 #define PROFILE_ARDU_MOTOR_SHIELD   5
 #define PROFILE_ROBOT_ARM_4DF       6
 #define PROFILE_HOME_AUTOMATION     7
+#define PROFILE_ALL_IN_ONE_KIT_ARDU 8
 
 #define SELECTED_PROFILE        PROFILE_MULTI_FUNC_SHIELD
 
@@ -111,6 +117,49 @@
     #define TRIGGER_ENABLED             true    /* trigger used for beeper control */
     #define TRIGGER_PIN                  3
     #define TRIGGER_ON_VALUE            LOW
+
+#elif SELECTED_PROFILE == PROFILE_ALL_IN_ONE_KIT_ARDU
+
+    #define COLOUR_SENSOR_AVAILABLE
+    #define LIGHTMETER_SENSOR_AVAILABLE
+    #define DHT20_SENSOR_AVAILABLE
+    #define MPU6050_SENSOR_AVAILABLE
+
+    #define ANALOG_SAMPLE_FREQ_HZ        29
+    #define ANALOG_ENABLED_A            0,1,6       /* A0, A1, A6 */
+    #define DIGITAL_INPUT_PINS          7,A2,A3     /* actual Arduino pins */
+    #define DIGITAL_INPUTS_ENABLED      0,1,2       /* index positions that map to digital pins defined above */
+    #define DIGITAL_INPUTS_INVERTED     0,2         /* index positions that map to digital pins defined above */
+
+    #define PULSE_COUNTER_PIN   A3
+
+    #define DEFAULT_MOTOR_DRIVER    MOTOR_DRIVER_DIRPWM
+    #define MOTOR1_DIRPWM_PWM_PIN      10
+    #define MOTOR1_DIRPWM_DIR_PIN      12
+    #define MOTOR2_DIRPWM_PWM_PIN      11
+    #define MOTOR2_DIRPWM_DIR_PIN      13
+
+    #define SONAR_ENABLED               true
+    #define SONAR_TRIG_PIN               6
+    #define SONAR_ECHO_PIN               5
+
+    #define SERVO1_ENABLED              true
+    #define SERVO1_PIN                   9
+
+    #define SWITCH1_ENABLED             true    /* Switches used for LED on/off control */
+    #define SWITCH1_ON_VALUE            HIGH
+    #define SWITCH1_PIN                 4
+    #define SWITCH2_ENABLED             true
+    #define SWITCH2_ON_VALUE            HIGH
+    #define SWITCH2_PIN                 10
+
+    #define TRIGGER_ENABLED             true    /* trigger used for beeper control */
+    #define TRIGGER_PIN                  3
+    #define TRIGGER_ON_VALUE            HIGH
+    #define TRIGGER_SIG_OSC_ENABLED     true
+
+    #define DISPLAY_LCD_I2C_MCP23008    true
+    #define DISPLAY_LCD_I2C_ADDR        0x21
 
 #elif SELECTED_PROFILE == PROFILE_ROBOT_MOTOR_SHIELD
 
@@ -410,8 +459,6 @@
 
 //----------------------------------------------------------------------------
 
-PROGMEM const char _HexStr[] = "0123456789ABCDEF";
-
 #if defined(AVR)
     #define digitalWriteAlt(pin,val)    digitalWriteFast_(pin,val)
 #else
@@ -434,5 +481,10 @@ PROGMEM const char _HexStr[] = "0123456789ABCDEF";
 extern void digitalWriteFast_(uint8_t pin, uint8_t val);
 
 extern void writeToStream(Print *response, const char *str_P);
+
+PROGMEM const char _HexStr[] = "0123456789ABCDEF";
+
+// Convert 16 bit unsigned integer to a 4 digit hex string.
+extern void convertToHex(char *valueHexOut, uint16_t value);
 
 #endif

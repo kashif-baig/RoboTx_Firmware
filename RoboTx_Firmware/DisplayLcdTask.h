@@ -77,7 +77,7 @@ public:
     // Enables the task, initialising the I2C bus if not already done so.
     void enable()
     {
-#if defined(DISPLAY_LCD_ENABLED)
+#if defined(DISPLAY_LCD_AVAILABLE)
         if (!_enabled)
         {
             initialize();
@@ -116,7 +116,7 @@ public:
     // Manages the backlight timeout.
     void doEvents()
     {
-    #if defined(DISPLAY_LCD_ENABLED)
+    #if defined(DISPLAY_LCD_AVAILABLE)
         if (_lightIsOn && DISPLAY_LCD_LIGHT_DURATION!=0 && millis() - _lightOnTime > (DISPLAY_LCD_LIGHT_DURATION * 1000))
         {
             lightOff();

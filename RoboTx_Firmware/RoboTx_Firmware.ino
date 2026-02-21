@@ -6,6 +6,7 @@
  * IRremote
  * LiquidCrystal I2C
  * Servo
+ * LiquidTWI2 (https://github.com/lincomatic/LiquidTWI2)
  * MessagingLib
  * StringLib
  * 
@@ -18,6 +19,7 @@
 #include "TimerIO.h"
 #include <MessagingLib.h>
 #include "MyDeserializableMessageFactory.h"
+#include "Settings.h"
 #include "ButtonMessage.h"
 #include "AnalogTask.h"
 #include "AnalogMessage.h"
@@ -32,8 +34,11 @@
 #include "Display7SegTask.h"
 #include "SwitchManager.h"
 #include "ColourTask.h"
+#include "LightMeterTask.h"
+#include "DHTTask.h"
+#include "AccelGyroTask.h"
 #include "DisplayLcdTask.h"
-#include "Settings.h"
+#include "I2CRequestMessage.h"
 
 #if defined(IR_REMOTE_ENABLED)
     #define DECODE_NEC
@@ -62,6 +67,17 @@ Config config = Config(&display7SegTask, &TmrIO, &pulseCounterTask, &analogTask)
 ColourTask colourTask = ColourTask(&config);
 ColourMessage colourMessage = ColourMessage(&colourTask);
 
+LightMeterTask lightMeterTask = LightMeterTask(&config);
+LightMeterMessage lightMeterMessage = LightMeterMessage();
+
+DHTTask dhtTask = DHTTask(&config);
+DHTMessage dhtMessage = DHTMessage();
+
+AccelGyroTask accelGyroTask = AccelGyroTask(&config);
+AccelGyroMessage accelGyroMessage = AccelGyroMessage();
+
+I2CRequestMessage i2cMessage = I2CRequestMessage(&colourTask, &lightMeterTask, &dhtTask, &accelGyroTask);
+
 SwitchManager switchManager = SwitchManager(SWITCH1_PIN, SWITCH2_PIN, SWITCH3_PIN, SWITCH4_PIN);
 
 #if DISPLAY_LCD_I2C_MCP23008 == true
@@ -72,10 +88,15 @@ SwitchManager switchManager = SwitchManager(SWITCH1_PIN, SWITCH2_PIN, SWITCH3_PI
 
 DisplayLcdTask displayLcdTask(&config, &lcd);
 
-MyDeserializableMessageFactory factory = MyDeserializableMessageFactory(
-                                                &config, &display7SegTask, &TmrIO, &connection, &analogMessage, &analogTask,
-                                                &sonarMessage, &servoManager, &pulseCounterMessage, &pulseCounterTask,
-                                                &colourMessage, &colourTask, &switchManager, &displayLcdTask);
+ConnectionMessage connMessage = ConnectionMessage(&config, &connection, &display7SegTask, &servoManager,
+                                                    &TmrIO, &analogTask, &pulseCounterTask, &colourTask,
+                                                    &switchManager, &displayLcdTask, &lightMeterTask,
+                                                    &dhtTask, &accelGyroTask);
+
+MyDeserializableMessageFactory factory = MyDeserializableMessageFactory(&connMessage,
+                                        &config, &display7SegTask, &TmrIO, &analogMessage,
+                                        &sonarMessage, &servoManager, &pulseCounterMessage,
+                                        &i2cMessage, &switchManager, &displayLcdTask);
 
 // Buffer must be large enough to hold the largest property value of a message.
 StringBuilder<17> msgBuffer;
@@ -133,6 +154,15 @@ void setup()
 
     colourTask.disable();
     colourTask.setColourMessage(&colourMessage);
+
+    lightMeterTask.disable();
+    lightMeterTask.setLightMeterMessage(&lightMeterMessage);
+
+    dhtTask.disable();
+    dhtTask.setDHTMessage(&dhtMessage);
+
+    accelGyroTask.disable();
+    accelGyroTask.setAccelGyroMessage(&accelGyroMessage);
 
     switchManager.initialize();
 
@@ -197,7 +227,10 @@ void loop()
     }
     pulseCounterTask.doEvents();
     colourTask.doEvents();
-
+    lightMeterTask.doEvents();
+    dhtTask.doEvents();
+    accelGyroTask.doEvents();
+    
     if (!display7SegTask.isBackgroundTask())
     {
         display7SegTask.doEvents();

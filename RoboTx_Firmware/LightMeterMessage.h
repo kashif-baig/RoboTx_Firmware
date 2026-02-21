@@ -1,26 +1,25 @@
-#ifndef COLOUR_MESSAGE_H
-#define COLOUR_MESSAGE_H
+#ifndef LIGHTMETER_MESSAGE_H
+#define LIGHTMETER_MESSAGE_H
 
-#include "ColourTask.h"
+//#include "LightMeterTask.h"
 #include <MessagingLib.h>
 #include "SerializableMessageLite.h"
 #include "Settings.h"
 
-class ColourTask;
+//class LightMeterTask;
 
-extern const char *ColourMessageType;
+extern const char *LightMeterMessageType;
 
 /**
- * Deserializes request for configuring colour sensor.
- * Serializes response with colour values.
+ * Serializes response with LUX values.
  */
-class ColourMessage : public SerializableMessageLite
+class LightMeterMessage : public SerializableMessageLite
 {
 public:
 
-    ColourMessage(ColourTask *colourTask)
+    LightMeterMessage()
     {
-        _colourTask = colourTask;
+
     }
 
     /**
@@ -28,7 +27,12 @@ public:
      */
     const char *getMessageType()
     {
-        return ColourMessageType;
+        return LightMeterMessageType;
+    }
+
+    void setLux(int32_t lux)
+    {
+        _lux = lux;
     }
 
 protected:
@@ -49,12 +53,11 @@ protected:
         // valueHex[2] = pgm_read_byte(&_HexStr[(value >> 4) & 15]);
         // valueHex[3] = pgm_read_byte(&_HexStr[value & 15]);
         // valueHex[4] = 0;
-
         convertToHex(valueHex, value);
         serializeProperty(valueHex);
     }
 private:
-    ColourTask *_colourTask;
+    int32_t _lux;
 };
 
 #endif

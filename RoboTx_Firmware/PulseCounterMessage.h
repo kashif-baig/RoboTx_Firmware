@@ -77,7 +77,7 @@ public:
     // Serializes pulse counter reading back to the client.
     void onSerialize()
     {
-        serializeProperty("");
+        serializeProperty("");  // Need to do this here to send first property delimiter.
         getStream()->print(_pulsePeriod);
     }
 

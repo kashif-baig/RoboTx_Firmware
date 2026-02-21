@@ -12,9 +12,9 @@
 #include "ConnectionMessage.h"
 #include "ConfigMessage.h"
 #include "PulseCounterMessage.h"
-#include "ColourMessage.h"
 #include "SwitchMessage.h"
 #include "DisplayLcdMessage.h"
+#include "I2CRequestMessage.h"
 #include <new>
 
 // Determine amount of memory to allocate for messages.
@@ -23,11 +23,10 @@ static const size_t LARGEST_MESSAGE_SIZE =
     STATIC_MAX(sizeof(BeeperMessage),
     STATIC_MAX(sizeof(MotorMessage),
     STATIC_MAX(sizeof(ServoMessage),
-    STATIC_MAX(sizeof(ConnectionMessage),
     STATIC_MAX(sizeof(ConfigMessage),
     STATIC_MAX(sizeof(SwitchMessage),
     STATIC_MAX(sizeof(DisplayLcdMessage),
-    0))))))));
+    0)))))));
 
 // Pre-allocated memory for messages. Align to 4 byte boundary.
 
@@ -46,25 +45,22 @@ static char* Message = MessageUnion.Memory;
 class MyDeserializableMessageFactory : public IDeserializableMessageFactory
 {
 public:
-    MyDeserializableMessageFactory(
-            Config *config, Display7SegTask *display7SegTask, TimerIO *timerIO, Connection *connection,
-            AnalogMessage *analogMessage, AnalogTask *analogTask, SonarMessage *sonarMessage,
-            ServoManager *servoManager, PulseCounterMessage *pulseCounterMessage, PulseCounterTask *pulseCounterTask,
-            ColourMessage *colourMessage, ColourTask *colourTask, SwitchManager *switchManager,
+    MyDeserializableMessageFactory(ConnectionMessage *connMessage,
+            Config *config, Display7SegTask *display7SegTask, TimerIO *timerIO,
+            AnalogMessage *analogMessage, SonarMessage *sonarMessage,
+            ServoManager *servoManager, PulseCounterMessage *pulseCounterMessage,
+            I2CRequestMessage *i2cMessage, SwitchManager *switchManager,
             DisplayLcdTask *displayLcdTask)
     {
+        _connMessage = connMessage;
         _config = config;
         _timerIO = timerIO;
         _display7SegTask = display7SegTask;
-        _connection = connection;
         _analogMessage = analogMessage;
-        _analogTask = analogTask;
         _sonarMessage = sonarMessage;
         _servoManager = servoManager;
         _pulseCounterMessage = pulseCounterMessage;
-        _pulseCounterTask = pulseCounterTask;
-        _colourMessage = colourMessage;
-        _colourTask = colourTask;
+        _i2cMessage = i2cMessage;
         _switchManager = switchManager;
         _displayLcdTask = displayLcdTask;
     }
@@ -122,15 +118,13 @@ protected:
         {
             return _pulseCounterMessage;
         }
-        if (strcmp(messageType, ColourMessageType) == 0)
+        if (strcmp(messageType, I2CRequestMessageType) == 0)
         {
-            return _colourMessage;
+            return _i2cMessage;
         }
         if (strcmp(messageType, ConnectionMessageType) == 0)
         {
-            return new (Message) ConnectionMessage(_config, _connection, _display7SegTask, _servoManager,
-                                                    _timerIO, _analogTask, _pulseCounterTask, _colourTask,
-                                                    _switchManager, _displayLcdTask);
+            return _connMessage;
         }
         if (strcmp(messageType, ConfigMessageType) == 0)
         {
@@ -140,23 +134,17 @@ protected:
     }
 
 private:
+    ConnectionMessage *_connMessage;
     Config *_config;
     TimerIO *_timerIO;
     Display7SegTask *_display7SegTask;
-    Connection *_connection;
     AnalogMessage *_analogMessage;
-    AnalogTask *_analogTask;
     SonarMessage *_sonarMessage;
     ServoManager *_servoManager;
     PulseCounterMessage *_pulseCounterMessage;
-    PulseCounterTask *_pulseCounterTask;
-    ColourMessage *_colourMessage;
-    ColourTask *_colourTask;
+    I2CRequestMessage *_i2cMessage;
     SwitchManager *_switchManager;
     DisplayLcdTask *_displayLcdTask;
-
-    Print *_outStream;
-    SerializableMessageSender *_serMsgSender;
 };
 
 #endif

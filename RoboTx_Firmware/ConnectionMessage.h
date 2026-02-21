@@ -10,6 +10,9 @@
 #include "PulseCounterTask.h"
 #include "Display7SegTask.h"
 #include "ColourTask.h"
+#include "LightMeterTask.h"
+#include "DHTTask.h"
+#include "AccelGyroTask.h"
 #include "SwitchManager.h"
 #include "DisplayLcdTask.h"
 #include "Settings.h"
@@ -31,7 +34,8 @@ public:
 
     ConnectionMessage (Config *config, Connection *connection, Display7SegTask *display7SegTask, ServoManager *servoManager,
                         TimerIO *timerIO, AnalogTask *analogTask, PulseCounterTask *pulseCounterTask, ColourTask *colourTask,
-                        SwitchManager *switchManager, DisplayLcdTask *displayLcdTask)
+                        SwitchManager *switchManager, DisplayLcdTask *displayLcdTask,
+                        LightMeterTask *lightMeterTask, DHTTask *dhtTask, AccelGyroTask *accelGyroTask)
     {
         _config = config;
         _connection = connection;
@@ -43,6 +47,9 @@ public:
         _colourTask = colourTask;
         _switchManager = switchManager;
         _displayLcdTask = displayLcdTask;
+        _lightMeterTask = lightMeterTask;
+        _dhtTask = dhtTask;
+        _accelGyroTask = accelGyroTask;
     }
 
     /**
@@ -73,20 +80,33 @@ public:
     {
         if (messageComplete)
         {
-            if (_cmd == CR_CMD_OPEN)
+            if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE && !_connection->isOpen())
             {
-                MsgSerial.write(MSG_START);
-                writeToStream(&MsgSerial, PSTR("RTx"));
-                MsgSerial.write(MSG_PROPERTY);
-                writeToStream(&MsgSerial, PSTR(ROBOT_ID));
-                MsgSerial.write(MSG_END);
+                // MsgSerial.write(MSG_START);
+                // writeToStream(&MsgSerial, PSTR("RTx"));
+                // MsgSerial.write(MSG_PROPERTY);
+                // writeToStream(&MsgSerial, PSTR(ROBOT_ID));
+                // MsgSerial.write(MSG_END);
+                // _timerIO->beep();
             }
             if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE)
             {
                 if (_connection->isOpen())
                 {
-                    _connection->keepAlive();
-                    return;
+                    if (_cmd == CR_CMD_KEEP_ALIVE)
+                    {
+                        _connection->keepAlive();
+                        return;
+                    }
+                }
+                else
+                {
+                    MsgSerial.write(MSG_START);
+                    writeToStream(&MsgSerial, PSTR("RTx"));
+                    MsgSerial.write(MSG_PROPERTY);
+                    writeToStream(&MsgSerial, PSTR(ROBOT_ID));
+                    MsgSerial.write(MSG_END);
+                    //_timerIO->beep();
                 }
                 _connection->setOpen(true);
                 _analogTask->enable();
@@ -108,7 +128,7 @@ public:
                 _timerIO->setInputsEnabled(false);
             }
 
-            _timerIO->beep(0);
+            //_timerIO->beep(0);
             
             _display7SegTask->setEnabled(false);
             if (_config->motorTaskAvailable())
@@ -121,6 +141,10 @@ public:
             _servoManager->disableServo(4);
             _pulseCounterTask->disable();
             _colourTask->disable();
+            _lightMeterTask->disable();
+            _dhtTask->disable();
+            _accelGyroTask->disable();
+            
 #if !defined(DIGITAL_INPUTS_ENABLED)
             //_timerIO->setInputsEnabled(false);
 #endif
@@ -143,5 +167,8 @@ private:
     ColourTask *_colourTask;
     SwitchManager *_switchManager;
     DisplayLcdTask *_displayLcdTask;
+    LightMeterTask *_lightMeterTask;
+    DHTTask *_dhtTask;
+    AccelGyroTask *_accelGyroTask;
 };
 #endif

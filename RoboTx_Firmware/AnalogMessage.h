@@ -58,12 +58,12 @@ protected:
     {
         if (enabled)
         {
-            char valueHex[4];
-            valueHex[0] = pgm_read_byte(&_HexStr[(value >> 8) & 15]);
-            valueHex[1] = pgm_read_byte(&_HexStr[(value >> 4) & 15]);
-            valueHex[2] = pgm_read_byte(&_HexStr[value & 15]);
-            valueHex[3] = 0;
-
+            char valueHex[5];
+            // valueHex[0] = pgm_read_byte(&_HexStr[(value >> 8) & 15]);
+            // valueHex[1] = pgm_read_byte(&_HexStr[(value >> 4) & 15]);
+            // valueHex[2] = pgm_read_byte(&_HexStr[value & 15]);
+            // valueHex[3] = 0;
+            convertToHex(valueHex, value);
             serializeProperty(valueHex);
         }
         else

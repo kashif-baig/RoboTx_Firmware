@@ -1,14 +1,14 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <MessagingLib.h>
+#include "SerializableMessageLite.h"
 #include "Settings.h"
 
 #if defined(DEBUG_ENABLED)
 
-extern const char *DebugMessageType;// = "DB";
+extern const char *DebugMessageType;
 
-class DebugMessage : public SerializableMessage
+class DebugMessage : public SerializableMessageLite
 {
     int32_t _val;
     const char *_msg;
@@ -61,6 +61,6 @@ protected:
     }
 };
 
-extern DebugMessage Debug;// = DebugMessage();
+extern DebugMessage Debug;
 #endif
 #endif

@@ -10,7 +10,7 @@
 
 class ColourMessage;
 
-#if !defined(COLOUR_SENSING_ENABLED)
+#if !defined(COLOUR_SENSOR_AVAILABLE)
 
 // On the Leonardo, the I2C pins clash with digital pins in use for other things (e.g. IR receiver).
 class ColourTask : public Task
@@ -41,6 +41,10 @@ public:
 
 #include "TCS34725_Lite.h"
 
+#ifndef TCS34725_ADDRESS
+  #define TCS34725_ADDRESS (0x29) ///< TCS3400 device addr
+#endif
+
 /**
  * Reads colour values reported by the colour sensor.
  * The inital state of the task is disabled and un-initialized.
@@ -50,7 +54,8 @@ public:
 class ColourTask : public Task
 {
 private:
-    TCS34725_Lite tcs = TCS34725_Lite();
+    I2C i2c = I2C(&Wire, TCS34725_ADDRESS);
+    TCS34725_Lite tcs = TCS34725_Lite(&i2c);
 
     uint16_t _c = 0;
     uint16_t _r = 0;
@@ -73,9 +78,11 @@ protected:
     {
         if (!_initialized)
         {
-            _config->setI2CInUse(true);
-            tcs.begin();
-            _initialized = true;
+            if (tcs.begin())
+            {
+                _config->setI2CInUse(true);
+                _initialized = true;
+            }
         }
     }
 
@@ -145,7 +152,6 @@ public:
 
     /**
      * Enables the task and starts collecting sensor values.
-     * This method is not implemented for Leonardo.
      */
     void enable()
     {
@@ -154,7 +160,6 @@ public:
 
     /**
      * Enables the task and starts collecting sensor values using integration time and gain.
-     * This method is not implemented for Leonardo.
      */
     void enable(uint8_t integrationTimeIdx, uint8_t gain)
     {
@@ -166,7 +171,7 @@ public:
         {
             tcs.enable();
         }
-        if (!_enabled)
+        if (!_enabled && _initialized)
         {
             setTime();
 
@@ -216,9 +221,8 @@ public:
             }
             tcs.setIntegrationtime(integrationTime);
             tcs.setGain(gain);
+            _enabled = true;
         }
-        _enabled = true;
-
     }
 
     // Returns true if the task is enabled, false otherwise.
@@ -229,7 +233,6 @@ public:
 
     /**
      * Disables the task.
-     * This method is not implemented for Leonardo.
      */
     void disable()
     {

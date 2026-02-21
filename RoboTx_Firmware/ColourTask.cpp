@@ -1,6 +1,6 @@
 #include "ColourTask.h"
 
-#if defined(COLOUR_SENSING_ENABLED)
+#if defined(COLOUR_SENSOR_AVAILABLE)
 
 void ColourTask::doEvents()
 {
