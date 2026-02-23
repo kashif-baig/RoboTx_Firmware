@@ -80,7 +80,7 @@ protected:
         }
         if (strcmp(messageType, ServoMessageType) == 0)
         {
-            return new (Message) ServoMessage(_servoManager, _config);
+            return new (Message) ServoMessage(_servoManager);
         }
         if (strcmp(messageType, SonarMessageType) == 0)
         {

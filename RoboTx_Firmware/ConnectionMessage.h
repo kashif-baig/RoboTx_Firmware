@@ -135,10 +135,7 @@ public:
             {
                 _config->getMotorTask()->disable();
             }
-            _servoManager->disableServo(1);
-            _servoManager->disableServo(2);
-            _servoManager->disableServo(3);
-            _servoManager->disableServo(4);
+            _servoManager->disableServos();
             _pulseCounterTask->disable();
             _colourTask->disable();
             _lightMeterTask->disable();

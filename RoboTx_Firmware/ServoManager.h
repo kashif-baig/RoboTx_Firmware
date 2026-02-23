@@ -4,10 +4,11 @@
 #include <Servo.h>
 #include "Settings.h"
 
-#define SV_DEFAULT_MIN_PULSE_WIDTH       544     // the default shortest pulse sent to a servo
-#define SV_DEFAULT_MAX_PULSE_WIDTH      2400     // the default longest pulse sent to a servo
+#define SV_DEFAULT_MIN_PULSE_WIDTH 544  // the default shortest pulse sent to a servo
+#define SV_DEFAULT_MAX_PULSE_WIDTH 2400 // the default longest pulse sent to a servo
 
-#define SV_MAX_SPEEDSTEP    50
+#define SV_MAX_SPEEDSTEP 50
+#define SERVO_COUNT 6
 
 /**
  * Manages an individual servo.
@@ -21,8 +22,8 @@ protected:
     int8_t _direction = 0;
 
     int16_t _targetPulse = 0;
-public:
 
+public:
     // Sets the pin used for the servo.
     void setPin(uint8_t pin)
     {
@@ -61,7 +62,7 @@ public:
         else
         {
             _targetPulse = value;
-            _direction = value - currentPos >= 0 ? 1: -1;
+            _direction = value - currentPos >= 0 ? 1 : -1;
         }
     }
 
@@ -118,9 +119,15 @@ class ServoManager
 #if (SERVO4_ENABLED == true)
     ManagedServo _servo4;
 #endif
+#if (SERVO5_ENABLED == true)
+    ManagedServo _servo5;
+#endif
+#if (SERVO6_ENABLED == true)
+    ManagedServo _servo6;
+#endif
 
 public:
-    ServoManager(uint8_t servo1Pin, uint8_t servo2Pin, uint8_t servo3Pin, uint8_t servo4Pin)
+    ServoManager(uint8_t servo1Pin, uint8_t servo2Pin, uint8_t servo3Pin, uint8_t servo4Pin, uint8_t servo5Pin = -1, uint8_t servo6Pin = -1)
     {
         setTime();
 #if (SERVO1_ENABLED == true)
@@ -141,6 +148,16 @@ public:
 #if (SERVO4_ENABLED == true)
         {
             _servo4.setPin(servo4Pin);
+        }
+#endif
+#if (SERVO5_ENABLED == true)
+        {
+            _servo5.setPin(servo5Pin);
+        }
+#endif
+#if (SERVO6_ENABLED == true)
+        {
+            _servo6.setPin(servo6Pin);
         }
 #endif
     }
@@ -185,6 +202,15 @@ public:
         }
     }
 
+    /// @brief Stops all servos maintaining their position.
+    void disableServos()
+    {
+        for (int8_t i=0; i < SERVO_COUNT; i++)
+        {
+            disableServo(i);
+        }
+    } 
+
     /**
      * Sets the servo position expressed as pulse width in microseconds.
      */
@@ -215,7 +241,7 @@ public:
             setTime(timeDiff - 4000);
 
             ManagedServo *servo;
-            for (uint8_t i=1; i<=4; i++)
+            for (uint8_t i = 1; i <= SERVO_COUNT; i++)
             {
                 if (servo = getServo(i))
                 {
@@ -226,7 +252,6 @@ public:
     }
 
 private:
-
     void enableServo(uint8_t servoNumber)
     {
         ManagedServo *servo;
@@ -245,39 +270,53 @@ private:
         }
         return false;
     }
-    
+
     ManagedServo *getServo(uint8_t servoNumber)
     {
         switch (servoNumber)
         {
-            case 1:
-            {
+        case 1:
+        {
 #if (SERVO1_ENABLED == true)
-                return &_servo1;
+            return &_servo1;
 #endif
-                break;
-            }
-            case 2:
-            {
+            break;
+        }
+        case 2:
+        {
 #if (SERVO2_ENABLED == true)
-                return &_servo2;
+            return &_servo2;
 #endif
-                break;
-            }
-            case 3:
-            {
+            break;
+        }
+        case 3:
+        {
 #if (SERVO3_ENABLED == true)
-                return &_servo3;
+            return &_servo3;
 #endif
-                break;
-            }
-            case 4:
-            {
+            break;
+        }
+        case 4:
+        {
 #if (SERVO4_ENABLED == true)
-                return &_servo4;
+            return &_servo4;
 #endif
-                break;
-            }
+            break;
+        }
+        case 5:
+        {
+#if (SERVO5_ENABLED == true)
+            return &_servo5;
+#endif
+            break;
+        }
+        case 6:
+        {
+#if (SERVO6_ENABLED == true)
+            return &_servo6;
+#endif
+            break;
+        }
         }
         return NULL;
     }

@@ -22,11 +22,11 @@ public:
     /**
      * Constructs instance using references to the servo motor objects.
      */
-    ServoMessage(ServoManager *servoManager, Config *config)
+    ServoMessage(ServoManager *servoManager/*, Config *config*/)
     {
         _servoManager = servoManager;
         _servoNumber = 0;
-        _config = config;
+        //_config = config;
     }
 
     /**
@@ -107,7 +107,7 @@ private:
     int16_t _param1, _param2;
     char _cmd;
     ServoManager *_servoManager;
-    Config *_config;
+    //Config *_config;
     uint8_t _servoNumber;
 };
 

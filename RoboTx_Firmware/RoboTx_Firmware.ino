@@ -54,7 +54,7 @@ SonarMessage sonarMessage = SonarMessage(&sonarTask);
 
 Display7SegTask display7SegTask = Display7SegTask(LED_7SEG_LATCH_PIN, LED_7SEG_CLK_PIN, LED_7SEG_DATA_PIN);
 
-ServoManager servoManager = ServoManager(SERVO1_PIN, SERVO2_PIN, SERVO3_PIN, SERVO4_PIN);
+ServoManager servoManager = ServoManager(SERVO1_PIN, SERVO2_PIN, SERVO3_PIN, SERVO4_PIN, SERVO5_PIN, SERVO6_PIN);
 
 IrMessage irMessage;
 Connection connection;

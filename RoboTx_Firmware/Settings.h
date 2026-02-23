@@ -308,10 +308,6 @@
     #define MOTOR1_HW56_INV_DIR        false
     #define MOTOR2_HW56_INV_DIR        false
     
-    #define SONAR_ENABLED               true
-    #define SONAR_TRIG_PIN              12
-    #define SONAR_ECHO_PIN              13
-
     #define SERVO1_ENABLED              true
     #define SERVO1_PIN                   8
     #define SERVO2_ENABLED              true
@@ -320,6 +316,10 @@
     #define SERVO3_PIN                  10
     #define SERVO4_ENABLED              true
     #define SERVO4_PIN                  11
+    // #define SERVO5_ENABLED              true
+    // #define SERVO5_PIN                  12
+    // #define SERVO6_ENABLED              true
+    // #define SERVO6_PIN                  13
 
     #define SWITCH1_ENABLED             true
     #define SWITCH1_ON_VALUE            HIGH
@@ -425,6 +425,14 @@
 #ifndef SERVO4_ENABLED
     #define SERVO4_ENABLED              false
     #define SERVO4_PIN                   8
+#endif
+#ifndef SERVO5_ENABLED
+    #define SERVO5_ENABLED              false
+    #define SERVO5_PIN                   9
+#endif
+#ifndef SERVO6_ENABLED
+    #define SERVO6_ENABLED              false
+    #define SERVO6_PIN                   10
 #endif
 
 #ifndef SWITCH1_ENABLED
