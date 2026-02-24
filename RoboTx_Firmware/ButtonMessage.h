@@ -38,12 +38,7 @@ public:
 protected:
     void onSerialize()
     {
-        char buttonHex[3];
-
-        buttonHex[0] = pgm_read_byte(&_HexStr[(_buttonValue >> 4) & 15]);
-        buttonHex[1] = pgm_read_byte(&_HexStr[_buttonValue & 15]);
-        buttonHex[2] = 0;
-        serializeProperty(buttonHex);
+        serializeProperty(convertToHex(_buttonValue));
     }
 
 private:

@@ -12,9 +12,9 @@ void AccelGyroMessage::onSerialize()
         char valType[2] = {_valueType, 0};
 
         serializeProperty(valType);
-        serializeToHex(_x);
-        serializeToHex(_y);
-        serializeToHex(_z);
+        serializeProperty(convertToHex(_x));
+        serializeProperty(convertToHex(_y));
+        serializeProperty(convertToHex(_z));
         break;
     }
     }

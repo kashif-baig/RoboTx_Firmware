@@ -27,6 +27,10 @@ protected:
     // Gets the underlying stream.
     Print *getStream() const;
 
+    // Converts an unsigned 16 bit integer to a hex string. 
+    const char * convertToHex(uint16_t value);
+
+
 private:
     Print *stream;
 };

@@ -42,20 +42,6 @@ protected:
      */
     void onSerialize();
 
-    /**
-     * Serializes a numeric value as a hex string.
-     */
-    void serializeToHex(uint16_t value)
-    {
-        char valueHex[5];
-        // valueHex[0] = pgm_read_byte(&_HexStr[(value >> 12) & 15]);
-        // valueHex[1] = pgm_read_byte(&_HexStr[(value >> 8) & 15]);
-        // valueHex[2] = pgm_read_byte(&_HexStr[(value >> 4) & 15]);
-        // valueHex[3] = pgm_read_byte(&_HexStr[value & 15]);
-        // valueHex[4] = 0;
-        convertToHex(valueHex, value);
-        serializeProperty(valueHex);
-    }
 private:
     int32_t _lux;
 };

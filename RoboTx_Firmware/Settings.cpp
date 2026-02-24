@@ -37,17 +37,3 @@ void writeToStream(Print *stream, const char *str_P)
         }
     } while (i > 0);
 }
-
-void convertToHex(char *valueHexOut, uint16_t value)
-{
-    // char valueHex[5];
-    uint8_t i = 0;
-    if (value >=1024)
-    {
-        valueHexOut[i++] = pgm_read_byte(&_HexStr[(value >> 12) & 15]);
-    }
-    valueHexOut[i++] = pgm_read_byte(&_HexStr[(value >> 8) & 15]);
-    valueHexOut[i++] = pgm_read_byte(&_HexStr[(value >> 4) & 15]);
-    valueHexOut[i++] = pgm_read_byte(&_HexStr[value & 15]);
-    valueHexOut[i] = 0;
-}

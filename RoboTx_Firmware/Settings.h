@@ -490,9 +490,4 @@ extern void digitalWriteFast_(uint8_t pin, uint8_t val);
 
 extern void writeToStream(Print *response, const char *str_P);
 
-PROGMEM const char _HexStr[] = "0123456789ABCDEF";
-
-// Convert 16 bit unsigned integer to a 4 digit hex string.
-extern void convertToHex(char *valueHexOut, uint16_t value);
-
 #endif

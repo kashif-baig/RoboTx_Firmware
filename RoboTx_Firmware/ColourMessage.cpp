@@ -4,8 +4,8 @@ const char *ColourMessageType = "L";
 
 void ColourMessage::onSerialize()
 {
-    serializeToHex(_colourTask->getR());
-    serializeToHex(_colourTask->getG());
-    serializeToHex(_colourTask->getB());
-    serializeToHex(_colourTask->getClear());
+    serializeProperty(convertToHex(_colourTask->getR()));
+    serializeProperty(convertToHex(_colourTask->getG()));
+    serializeProperty(convertToHex(_colourTask->getB()));
+    serializeProperty(convertToHex(_colourTask->getClear()));
 }

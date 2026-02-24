@@ -54,16 +54,6 @@ protected:
      */
     void onSerialize();
 
-    /**
-     * Serializes a numeric value as a hex string.
-     */
-    void serializeToHex(uint16_t value)
-    {
-        char valueHex[5];
-        convertToHex(valueHex, value);
-        serializeProperty(valueHex);
-    }
-
     private:
     char _valueType;
     uint16_t _x,_y,_z;

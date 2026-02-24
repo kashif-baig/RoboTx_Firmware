@@ -11,6 +11,6 @@ void LightMeterMessage::onSerialize()
     }
     else
     {
-        serializeToHex(_lux);
+        serializeProperty(convertToHex(_lux));
     }
 }
