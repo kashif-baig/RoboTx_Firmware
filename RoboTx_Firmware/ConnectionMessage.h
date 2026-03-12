@@ -80,15 +80,10 @@ public:
     {
         if (messageComplete)
         {
-            if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE && !_connection->isOpen())
-            {
-                // MsgSerial.write(MSG_START);
-                // writeToStream(&MsgSerial, PSTR("RTx"));
-                // MsgSerial.write(MSG_PROPERTY);
-                // writeToStream(&MsgSerial, PSTR(ROBOT_ID));
-                // MsgSerial.write(MSG_END);
-                // _timerIO->beep();
-            }
+            // if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE && !_connection->isOpen())
+            // {
+
+            // }
             if (_cmd == CR_CMD_OPEN || _cmd == CR_CMD_KEEP_ALIVE)
             {
                 if (_connection->isOpen())
@@ -128,7 +123,7 @@ public:
                 _timerIO->setInputsEnabled(false);
             }
 
-            //_timerIO->beep(0);
+            _timerIO->beep(0);
             
             _display7SegTask->setEnabled(false);
             if (_config->motorTaskAvailable())
