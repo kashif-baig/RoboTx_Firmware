@@ -59,7 +59,7 @@
 #define PROFILE_HOME_AUTOMATION     7
 #define PROFILE_ALL_IN_ONE_KIT_ARDU 8
 
-#define SELECTED_PROFILE        PROFILE_MULTI_FUNC_SHIELD
+#define SELECTED_PROFILE        PROFILE_ALL_IN_ONE_KIT_ARDU
 
 // ----------------------------------------------------------------------------
 
@@ -146,12 +146,12 @@
     #define SERVO1_ENABLED              true
     #define SERVO1_PIN                   9
 
-    #define SWITCH1_ENABLED             true    /* Switches used for LED on/off control */
+    #define SWITCH1_ENABLED             true
     #define SWITCH1_ON_VALUE            HIGH
-    #define SWITCH1_PIN                 4
+    #define SWITCH1_PIN                 4       /* Switch used for Relay on/off control */
     #define SWITCH2_ENABLED             true
     #define SWITCH2_ON_VALUE            HIGH
-    #define SWITCH2_PIN                 10
+    #define SWITCH2_PIN                 10      /* Switch used for LED on/off control */
 
     #define TRIGGER_ENABLED             true    /* trigger used for beeper control */
     #define TRIGGER_PIN                  3
