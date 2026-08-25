@@ -2,6 +2,8 @@
 
 The Robo‑Tx firmware is a modular Arduino C++ codebase that implements a message/task architecture for remote interaction (via serial communication) with sensors and actuators from a client computer, e.g. PC. The code includes sensor drivers, message classes, task handlers, motor/servo managers, I2C helpers, and serialization utilities; the project's entry point is RoboTx_Firmware.ino. It targets Arduino R3/R4 microcontroller boards and kits. Be sure to review library dependencies listed in the .ino file and configuration in Settings.h before deploying.
 
+**Important:** review file **RoboTx_Firmware.ino** to know what Arduino libraries are required for the firmware to build before uploading to an Arduino board.
+
 ## Overview - what the repository contains
 
 - **Main sketch:** RoboTx_Firmware.ino is the firmware entry point.
