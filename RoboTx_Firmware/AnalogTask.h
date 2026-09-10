@@ -5,20 +5,22 @@
 #include <MessagingLib.h>
 #include "AnalogMessage.h"
 
-/**
- * Default intervals determine how many times per second the analog pins (A0,A1,A2,A3,A4)
- * will be read and serialized. I.e. 1000 / (90 + 2 + 2 + 2 + 2 + 2) = 10 readings per second.
- */
-#define ANALOG_TASK_DEFAULT_INTERVAL_MS 90
-#define ANALOG_TASK_READING_INTERVAL_MS 2
-
-#define ANALOG_MAX_SAMPLE_FREQ_HZ   50
-
 #if defined(PIN_A6) && defined(PIN_A7) && !defined(__AVR_ATmega32U4__)
 #define ANALOG_PIN_COUNT 8
 #else
 #define ANALOG_PIN_COUNT 6
 #endif
+
+
+/**
+ * Default intervals determine how many times per second the analog pins (A0,A1,A2,A3,A4,A5),
+ * and optionally (A6,A7), will be read and serialized.
+ */
+#define ANALOG_TASK_DEFAULT_INTERVAL_MS 50 - ANALOG_PIN_COUNT
+#define ANALOG_TASK_READING_INTERVAL_MS 1
+
+#define ANALOG_MAX_SAMPLE_FREQ_HZ   100
+
 
 /**
  * AnalogTask FSM states.
@@ -104,10 +106,9 @@ public:
      */
     void doEvents();
 
-    // Enables pin (specified by index where 0 >= pin <=5) for analog reading.
+    // Enables pin (specified by index where 0 >= pin <=ANALOG_PIN_COUNT) for analog reading.
     void enableInputByIdx(uint8_t pinIdx, bool on)
     {
-        //pin = constrain(pin, 0, ANALOG_PIN_COUNT-1);
         if (pinIdx >= ANALOG_PIN_COUNT)
         {
             return;

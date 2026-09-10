@@ -32,8 +32,6 @@ void AccelGyroTask::doEvents()
             _mpu.getAccelRaw(&x, &y, &z);
 
             _accelGyroMessage->serializeAccel(x, y, z);
-            //_accelGyroMessage->serialize(&MsgSerial);
-
             _accelGyroTaskState = AccelGyroTaskState_SendGyro;
         }
         break;
@@ -48,8 +46,6 @@ void AccelGyroTask::doEvents()
             _mpu.getGyroRaw(&x, &y, &z);
 
             _accelGyroMessage->serializeGyro(x, y, z);
-            //_accelGyroMessage->serialize(&MsgSerial);
-
             _accelGyroTaskState = AccelGyroTaskState_Delay;
         }
         break;

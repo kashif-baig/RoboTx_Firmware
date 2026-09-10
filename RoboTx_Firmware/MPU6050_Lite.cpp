@@ -37,7 +37,7 @@ bool MPU6050::begin()
   return true;
 }
 
-void MPU6050::setAccelScale(uint8_t accelScale = 0)
+void MPU6050::setAccelScale(uint8_t accelScale)
 {
   if (accelScale > 3)
   {
@@ -47,7 +47,7 @@ void MPU6050::setAccelScale(uint8_t accelScale = 0)
   _i2c->writeBits(RA_ACCEL_CONFIG, ACONFIG_AFS_SEL_BIT, ACONFIG_AFS_SEL_LENGTH, accelScale);
 }
 
-void MPU6050::setGyroScale(uint8_t gyroScale = 0)
+void MPU6050::setGyroScale(uint8_t gyroScale)
 {
   if (gyroScale > 3)
   {

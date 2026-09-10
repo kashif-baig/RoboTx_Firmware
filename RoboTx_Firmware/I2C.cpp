@@ -67,7 +67,7 @@ bool I2C::writeRegister(uint8_t reg, uint8_t data)
     return writeBytes(cmd, sizeof(cmd));
 }
 
-bool I2C::readRegister(uint8_t reg, uint8_t *data, uint8_t dataSize = 1)
+bool I2C::readRegister(uint8_t reg, uint8_t *data, uint8_t dataSize)
 {
     if (!writeByte(reg, true))
     {

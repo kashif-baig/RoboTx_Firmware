@@ -6,7 +6,8 @@
 #include "Config.h"
 #include "Settings.h"
 
-#define ACCEL_GYRO_TASK_INTERVAL_MS 15
+// To determine actual interval for sending values, add 6ms to the interval below.
+#define ACCEL_GYRO_TASK_INTERVAL_MS 10
 
 #if !defined(MPU6050_SENSOR_AVAILABLE)
 
